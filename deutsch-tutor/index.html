@@ -28,7 +28,34 @@ const key='deutschSprintV3';const old=JSON.parse(localStorage.getItem('deutschSp
 function side(){days.innerHTML='';topics.forEach((x,i)=>{let b=document.createElement('button');b.className='day'+(st.done[i]?' done':'')+(st.cur===i?' active':'');b.disabled=!openDay(i);b.innerHTML=`<span><b>J${i+1}</b> · ${x[0]}</span><span>${st.done[i]?'✓':openDay(i)?'→':'🔒'}</span>`;b.onclick=()=>{st.cur=i;save();render()};days.appendChild(b)});let n=doneN();pt.textContent=n+'/28';pb.style.width=(n/28*100)+'%';ps.textContent=n?`${n} journée(s) validée(s)`:'Commence par le Jour 1.'}
 function say(txt,rate=.88){if(!('speechSynthesis'in window)){alert('Audio non disponible dans ce navigateur.');return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(txt);u.lang='de-DE';u.rate=rate;let v=speechSynthesis.getVoices().find(x=>/^de/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
 function audioText(i,d){return `${d.e.join(' ')} Heute lerne ich Deutsch. Danach übe ich selbst, weil regelmäßiges Lernen wichtig ist.`}
-function quiz(i,d){let base=[['Quelle règle dois-tu appliquer ?',d.r,'Je traduis mot à mot le français.','La place du verbe ne compte pas.'],['Quelle phrase est correcte ?',d.e[0],'Ich Deutsch heute lernen.','Heute ich Deutsch lernen.']];d.v.forEach(x=>base.push([`Comment dit-on « ${x[0]} » ?`,x[1],d.v[(d.v.indexOf(x)+1)%d.v.length][1],d.v[(d.v.indexOf(x)+2)%d.v.length][1]]));while(base.length<10)base.push(['Que faut-il faire avant le test ?','Cours + Hören + Sprechen','Seulement le QCM','Sauter la leçon']);return base.slice(0,10).map(q=>{let correct=q[1],opts=q.slice(1);opts.sort(()=>Math.random()-.5);return{q:q[0],opts,ans:opts.indexOf(correct)}})}
+function quiz(i,d){
+  const title=topics[i][0], objective=topics[i][1], v=d.v;
+  const other=(idx,shift=1)=>v[(idx+shift)%v.length][1];
+  let base=[
+    [`« ${title} » — quelle règle résume le mieux la leçon ?`,d.r,'Le verbe peut être placé n’importe où.','Il suffit de traduire mot à mot le français.'],
+    [`« ${title} » — quelle phrase reprend correctement un exemple du cours ?`,d.e[0],'Ich heute Deutsch lernen.','Heute ich Deutsch lernen.'],
+    [`« ${title} » — quel point faut-il surtout éviter ?`,d.w,'Ignorer complètement la structure.','Toujours supprimer le verbe.'],
+    [`Jour ${i+1} · Comment dit-on « ${v[0][0]} » ?`,v[0][1],other(0,1),other(0,2)],
+    [`Jour ${i+1} · Choisis l’allemand pour « ${v[1][0]} ».`,v[1][1],other(1,1),other(1,2)],
+    [`Jour ${i+1} · Quel mot correspond à « ${v[2][0]} » ?`,v[2][1],other(2,1),other(2,2)],
+    [`Jour ${i+1} · Retrouve la traduction de « ${v[3][0]} ».`,v[3][1],other(3,1),other(3,2)],
+    [`Jour ${i+1} · Pour « ${v[4][0]} », quelle réponse est correcte ?`,v[4][1],other(4,1),other(4,2)],
+    [`« ${title} » — quel est l’objectif pratique de cette journée ?`,objective,'Apprendre une liste sans contexte.','Éviter de produire des phrases.'],
+    [`Avant le test du jour ${i+1} sur « ${title} », quel parcours doit être terminé ?`,'Cours + Hören + Sprechen','Uniquement le QCM final.','Seulement le vocabulaire.']
+  ];
+  const seen=new Set();
+  const unique=[];
+  for(const q of base){
+    const key=q[0].toLowerCase().replace(/\\s+/g,' ').trim();
+    if(!seen.has(key)){seen.add(key);unique.push(q)}
+  }
+  if(unique.length!==10) throw new Error(`Quiz J${i+1}: ${unique.length}/10 questions uniques`);
+  return unique.map(q=>{
+    const correct=q[1],opts=q.slice(1);
+    for(let n=opts.length-1;n>0;n--){const j=Math.floor(Math.random()*(n+1));[opts[n],opts[j]]=[opts[j],opts[n]]}
+    return{q:q[0],opts,ans:opts.indexOf(correct)}
+  })
+}
 function upd(i){let s=step(i);['course','listen','speak'].forEach(k=>document.getElementById('s-'+k)?.classList.toggle('ok',s[k]));document.getElementById('s-test')?.classList.toggle('ok',!!st.done[i]);let ready=s.course&&s.listen&&s.speak;gate?.classList.toggle('hidden',ready);test?.classList.toggle('hidden',!ready)}
 function render(){side();let i=st.cur;if(!openDay(i)){main.innerHTML='<h2>🔒 Journée verrouillée</h2>';return}let d=lesson(i),s=step(i),aud=audioText(i,d),qs=quiz(i,d),speech=st.speech[i]||'';main.innerHTML=`<div class="hero"><div class="small">Semaine ${Math.floor(i/7)+1} · Jour ${i+1}</div><h2>${topics[i][0]}</h2><div class="meta"><span class="pill">🎯 ${topics[i][1]}</span><span class="pill">✅ test ≥ 90 %</span>${st.done[i]?'<span class="pill">🏆 Déjà validé</span>':''}</div></div><div class="steps"><div class="step" id="s-course">1 · 📘 Cours</div><div class="step" id="s-listen">2 · 🎧 Hören</div><div class="step" id="s-speak">3 · 🎙 Sprechen</div><div class="step" id="s-test">4 · 📝 Test</div></div>
 <div class="section course"><h3>📘 Cours complet</h3><div class="box"><h4>Pourquoi apprendre ça ?</h4><p>Cette notion fait partie des structures à haut rendement pour passer d’un allemand A2 à un allemand réellement utilisable.</p><h4>La règle</h4><div class="rule">${d.r}</div><h4>Exemples</h4><div class="examples">${d.e.map((x,n)=>`<div class="ex"><b>Exemple ${n+1}</b><p>${x}</p></div>`).join('')}</div><h4>Erreur fréquente</h4><div class="warn">${d.w}</div><h4>Méthode</h4><ol><li>Lis la règle.</li><li>Lis chaque exemple à voix haute 3 fois.</li><li>Crée 3 phrases personnelles.</li><li>Explique la règle avec tes propres mots.</li></ol></div><div class="two" style="margin-top:12px"><div class="box"><h3>🧠 Vocabulaire actif</h3><div class="vocab">${d.v.map(x=>`<div class="vrow"><span>${x[0]}</span><span>${x[1]}</span></div>`).join('')}</div></div><div class="box"><h3>✍️ Pratique guidée</h3><p>Écris 3 phrases personnelles avant de poursuivre.</p><textarea id="practice"></textarea><div class="actions"><button class="btn primary" id="courseDone">Cours terminé</button></div></div></div></div>
