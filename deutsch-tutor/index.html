@@ -47,6 +47,18 @@ const materials=[
 {read:'Bei einer längeren Diskussion muss man nicht jedes unbekannte Wort nachschlagen. Man kann die Bedeutung oft aus dem Kontext erschließen und seine eigene Aussage mit einfacheren Wörtern umformulieren.',rq:['Was kann man bei einem unbekannten Wort tun?','Aus dem Kontext erschließen oder umformulieren.','Immer sofort abbrechen.','Nur auf Französisch antworten.'],listen:'Heute hören Sie einen kurzen Beitrag über nachhaltige Mobilität. Achten Sie besonders auf die Argumente für Bahn, Fahrrad und Carsharing sowie auf die genannten Nachteile.',lq:['Worauf soll man besonders achten?','Auf Argumente und Nachteile.','Nur auf Städtenamen.','Nur auf Zahlen.']},
 {read:'Nach vier Wochen wird nicht nur der Testscore betrachtet. Entscheidend ist auch, ob längere Texte besser verstanden werden, Antworten flüssiger werden und wiederkehrende Fehler seltener auftreten.',rq:['Was zählt außer dem Testscore?','Reale Verbesserung der Fähigkeiten.','Nur die Anzahl gelernter Wörter.','Nur die Lernzeit.'],listen:'Zum Abschluss vergleichen wir Ihre Ergebnisse mit dem ersten Diagnosetest. Danach werden die nächsten Lernziele nach Ihren stärksten und schwächsten Bereichen festgelegt.',lq:['Was geschieht nach dem Vergleich?','Neue Lernziele werden festgelegt.','Der Kurs endet ohne Auswertung.','Alle Übungen werden gelöscht.']}
 ];
+function auditMaterials(){
+ if(materials.length!==topics.length) throw new Error('Hören/Lesen: nombre de supports incohérent');
+ materials.forEach((m,i)=>{
+   if(!m.listen||!m.lq||m.lq.length!==4) throw new Error('Hören J'+(i+1)+' incomplet');
+   if(!m.read||!m.rq||m.rq.length!==4) throw new Error('Lesen J'+(i+1)+' incomplet');
+   const answers=[m.lq[1],m.rq[1]];
+   if(new Set(m.lq.slice(1)).size!==3) throw new Error('Hören J'+(i+1)+' réponses dupliquées');
+   if(new Set(m.rq.slice(1)).size!==3) throw new Error('Lesen J'+(i+1)+' réponses dupliquées');
+   if(!answers[0]||!answers[1]) throw new Error('Support J'+(i+1)+' sans réponse correcte');
+ });
+}
+auditMaterials();
 const data={
 0:{r:'Dans une proposition principale, le verbe conjugué est en 2e position logique. Si tu commences par Heute, Morgen ou Am Wochenende, le verbe vient avant le sujet.',e:['Heute arbeite ich zu Hause.','Am Wochenende besuche ich meine Familie.'],w:'❌ Heute ich arbeite. → ✅ Heute arbeite ich.',v:[['aujourd’hui','heute'],['demain','morgen'],['week-end','am Wochenende'],['travailler','arbeiten'],['habiter','wohnen']],m:'Parle 2 minutes de ta journée avec Heute, Morgen et Am Wochenende.'},
 1:{r:'Avec weil, dass et wenn, le verbe conjugué va à la fin de la subordonnée.',e:['Ich lerne Deutsch, weil ich in Deutschland arbeiten möchte.','Ich glaube, dass Deutsch wichtig ist.'],w:'❌ weil ich habe Zeit → ✅ weil ich Zeit habe',v:[['parce que','weil'],['que','dass'],['si/quand','wenn'],['apprendre','lernen'],['vouloir','möchten']],m:'Réponds : Warum möchten Sie in Deutschland arbeiten? Utilise weil 3 fois.'},
@@ -64,7 +76,7 @@ function lesson(i){let d=data[i];if(d)return d;const [t,o]=topics[i];return{r:`A
 const key='deutschSprintV3';const old=JSON.parse(localStorage.getItem('deutschSprintV1')||'null');let st=JSON.parse(localStorage.getItem(key)||'null')||{done:old?.done||{},scores:old?.scores||{},cur:0,steps:{},speech:{}};st.steps=st.steps||{};st.speech=st.speech||{};function save(){localStorage.setItem(key,JSON.stringify(st))}function step(i){let s=st.steps[i]||(st.steps[i]={});if(s.course==null)s.course=false;if(s.read==null)s.read=false;if(s.listen==null)s.listen=false;if(s.speak==null)s.speak=false;return s}function openDay(i){return i===0||!!st.done[i-1]}function doneN(){return Object.values(st.done).filter(Boolean).length}
 function side(){days.innerHTML='';topics.forEach((x,i)=>{let b=document.createElement('button');b.className='day'+(st.done[i]?' done':'')+(st.cur===i?' active':'');b.disabled=!openDay(i);b.innerHTML=`<span><b>J${i+1}</b> · ${x[0]}</span><span>${st.done[i]?'✓':openDay(i)?'→':'🔒'}</span>`;b.onclick=()=>{st.cur=i;save();render()};days.appendChild(b)});let n=doneN();pt.textContent=n+'/28';pb.style.width=(n/28*100)+'%';ps.textContent=n?`${n} journée(s) validée(s)`:'Commence par le Jour 1.'}
 function say(txt,rate=.88){if(!('speechSynthesis'in window)){alert('Audio non disponible dans ce navigateur.');return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(txt);u.lang='de-DE';u.rate=rate;let v=speechSynthesis.getVoices().find(x=>/^de/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
-function audioText(i,d){return `${d.e.join(' ')} Heute lerne ich Deutsch. Danach übe ich selbst, weil regelmäßiges Lernen wichtig ist.`}
+function audioText(i,d){return materials[i]?.listen||''}
 function quiz(i,d){
   const title=topics[i][0], objective=topics[i][1], v=d.v;
   const other=(idx,shift=1)=>v[(idx+shift)%v.length][1];
@@ -93,7 +105,7 @@ function quiz(i,d){
     return{q:q[0],opts,ans:opts.indexOf(correct)}
   })
 }
-function upd(i){let s=step(i);['course','listen','speak'].forEach(k=>document.getElementById('s-'+k)?.classList.toggle('ok',s[k]));document.getElementById('s-test')?.classList.toggle('ok',!!st.done[i]);let ready=s.course&&s.listen&&s.speak;gate?.classList.toggle('hidden',ready);test?.classList.toggle('hidden',!ready)}
+function upd(i){let s=step(i);['course','read','listen','speak'].forEach(k=>document.getElementById('s-'+k)?.classList.toggle('ok',s[k]));document.getElementById('s-test')?.classList.toggle('ok',!!st.done[i]);let ready=s.course&&s.read&&s.listen&&s.speak;gate?.classList.toggle('hidden',ready);test?.classList.toggle('hidden',!ready)}
 function render(){side();let i=st.cur;if(!openDay(i)){main.innerHTML='<h2>🔒 Journée verrouillée</h2>';return}let d=lesson(i),s=step(i),mat=materials[i],lvl=levelForDay(i),profile=cefr[lvl],aud=audioText(i,d),qs=quiz(i,d),speech=st.speech[i]||'';main.innerHTML=`<div class="hero"><div class="small">Semaine ${Math.floor(i/7)+1} · Jour ${i+1}</div><h2>${topics[i][0]}</h2><div class="meta"><span class="pill">📊 ${profile.label}</span><span class="pill">🎯 ${topics[i][1]}</span><span class="pill">✅ test ≥ 90 %</span>${st.done[i]?'<span class="pill">🏆 Déjà validé</span>':''}</div></div>
 <div class="section"><div class="box"><h3>🧭 Repère CECRL — ${profile.label}</h3><p><b>À ce niveau :</b> ${profile.can}</p><div class="two"><div><b>Lesen</b><p class="small">${profile.read}</p></div><div><b>Hören</b><p class="small">${profile.hear}</p></div></div><p class="small"><b>Sprechen :</b> ${profile.speak}</p></div></div>
 <div class="steps"><div class="step" id="s-course">1 · 📘 Cours</div><div class="step" id="s-read">2 · 📖 Lesen</div><div class="step" id="s-listen">3 · 🎧 Hören</div><div class="step" id="s-speak">4 · 🎙 Sprechen</div><div class="step" id="s-test">5 · 📝 Test</div></div>
