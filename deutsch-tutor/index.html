@@ -1169,6 +1169,14 @@ function maybeHelpForOption(text){
  const h=a1OptionHelp(text);
  return h ? ' '+directHelpButton(h) : '';
 }
+
+function a1AudioButton(text){
+ const clean=String(text||'').replace(/[„“"]/g,'').trim();
+ return `<button type="button" class="iconBtn speakText" title="Anhören" aria-label="Anhören" data-text="${clean.replace(/"/g,'&quot;')}">🔊</button>`;
+}
+function maybeAudioForOption(text){
+ return /[A-Za-zÄÖÜäöüß]/.test(text) ? ' '+a1AudioButton(text) : '';
+}
 function a1QuizFor(i){
  return a1Curriculum[i].quiz.map(q=>({q:q[0],opts:q.slice(1),ans:0}));
 }
@@ -1180,10 +1188,10 @@ function renderA1(i,s){
  <div class="section"><div class="box"><h3>1 · 👂 Hören und nachsprechen</h3><p class="small">Höre jeden Ausdruck und sprich ihn zweimal laut nach. ${directHelpButton(helperLang()==='fr'?'Écoute chaque expression et répète-la deux fois à voix haute.':helperLang()==='ar'?'استمع إلى كل عبارة وكررها مرتين بصوت مرتفع.':'Listen to each expression and repeat it aloud twice.')}</p>${L.phrases.map(a1PhraseCard).join('')}<div class="actions"><button class="btn primary" id="a1CourseDone">Diesen Teil abschließen</button></div></div></div>
  <div class="section"><div class="box"><h3>2 · 💬 Mini-Dialog</h3><div class="miniDialogue">${L.dialogue.map((x,n)=>`<p><b>${n%2===0?'A':'B'}:</b> ${x} ${directHelpButton(a1TextHelp(x))}</p>`).join('')}</div><div class="actions"><button class="btn secondary" id="a1DialogPlay">▶ Dialog hören</button></div></div></div>
  <div class="section"><div class="box"><h3>3 · 🧩 Mini-Regel</h3><div class="rule">${L.rule} ${directHelpButton(a1TextHelp(L.rule))}</div></div></div>
- <div class="section"><h3>📖 Lesen</h3><div class="box"><div class="transcript">${L.read} ${directHelpButton(a1TextHelp(L.read))}</div><div class="q"><b>${L.readQ[0]} ${directHelpButton(qHelp(L.readQ[0]))}</b>${L.readQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1read" value="${j}"> ${o}</label>`).join('')}</div><button class="btn primary" id="a1ReadBtn">Lesen prüfen</button><div id="a1ReadFb" class="small"></div></div></div>
- <div class="section"><h3>🎧 Hören</h3><div class="box"><div class="actions"><button class="btn primary" id="a1ListenPlay">▶ Anhören</button><button class="btn secondary" id="a1ListenSlow">🐢 Langsam</button></div><div class="q"><b>${L.listenQ[0]} ${directHelpButton(qHelp(L.listenQ[0]))}</b>${L.listenQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1listen" value="${j}"> ${o}</label>`).join('')}</div><button class="btn primary" id="a1ListenBtn">Hören prüfen</button><div id="a1ListenFb" class="small"></div></div></div>
+ <div class="section"><h3>📖 Lesen</h3><div class="box"><div class="transcript">${L.read} ${directHelpButton(a1TextHelp(L.read))}</div><div class="q"><b>${L.readQ[0]} ${a1AudioButton(L.readQ[0])} ${directHelpButton(qHelp(L.readQ[0]))}</b>${L.readQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1read" value="${j}"> ${o}${maybeAudioForOption(o)}</label>`).join('')}</div><button class="btn primary" id="a1ReadBtn">Lesen prüfen</button><div id="a1ReadFb" class="small"></div></div></div>
+ <div class="section"><h3>🎧 Hören</h3><div class="box"><div class="actions"><button class="btn primary" id="a1ListenPlay">▶ Anhören</button><button class="btn secondary" id="a1ListenSlow">🐢 Langsam</button></div><div class="q"><b>${L.listenQ[0]} ${a1AudioButton(L.listenQ[0])} ${directHelpButton(qHelp(L.listenQ[0]))}</b>${L.listenQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1listen" value="${j}"> ${o}${maybeAudioForOption(o)}</label>`).join('')}</div><button class="btn primary" id="a1ListenBtn">Hören prüfen</button><div id="a1ListenFb" class="small"></div></div></div>
  <div class="section"><h3>🎙 Sprechen</h3><div class="box"><div class="mission"><b>Aufgabe:</b> ${L.task} ${directHelpButton(a1TextHelp(L.task))}</div><textarea id="a1SpeechText" placeholder="Schreibe hier, was du gesagt hast ...">${speech}</textarea><div class="actions"><button class="btn primary" id="a1SpeakBtn">Sprechen bestätigen</button></div><div id="a1SpeakFb" class="small"></div></div></div>
- <div class="section ${s.course&&s.read&&s.listen&&s.speak?'':'hidden'}" id="a1Test"><h3>📝 Abschlusstest</h3><p class="small">10 Fragen · 9/10 minimum.</p><form id="a1Form">${q.map((qq,n)=>`<div class="q"><b>${n+1}. ${qq.q} ${directHelpButton(a1QuizHelp(qq.q))}</b>${qq.opts.map((o,j)=>`<label class="opt"><input type="radio" name="a1q${n}" value="${j}"> ${o}${maybeHelpForOption(o)}</label>`).join('')}</div>`).join('')}<button class="btn primary">Auswerten</button></form><div id="a1Res"></div></div>`;
+ <div class="section ${s.course&&s.read&&s.listen&&s.speak?'':'hidden'}" id="a1Test"><h3>📝 Abschlusstest</h3><p class="small">10 Fragen · 9/10 minimum.</p><form id="a1Form">${q.map((qq,n)=>`<div class="q"><b>${n+1}. ${qq.q} ${a1AudioButton(qq.q)} ${directHelpButton(a1QuizHelp(qq.q))}</b>${qq.opts.map((o,j)=>`<label class="opt"><input type="radio" name="a1q${n}" value="${j}"> ${o}${maybeAudioForOption(o)}${maybeHelpForOption(o)}</label>`).join('')}</div>`).join('')}<button class="btn primary">Auswerten</button></form><div id="a1Res"></div></div>`;
 
  document.querySelectorAll('.speakText').forEach(b=>b.onclick=()=>say(b.dataset.text,.75));
  document.querySelectorAll('.sentenceHelp').forEach(b=>b.onclick=()=>{let h=b.nextElementSibling;if(!h||!h.classList?.contains('helpText')){h=document.createElement('div');h.className='helpText';b.parentElement.insertBefore(h,b.nextSibling)}h.textContent=b.dataset.help;h.dir=helperLang()==='ar'?'rtl':'ltr';h.classList.toggle('show')});
