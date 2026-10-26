@@ -1083,7 +1083,6 @@ function auditA1HelperTranslations(){
  if(missing.length){console.error('A1 helper translation audit failed',missing);throw new Error('A1 helper translations missing: '+missing.length)}
  return true;
 }
-auditA1HelperTranslations();
 function a1Help(row){
  const l=helperLang();
  return l==='fr'?row[1]:l==='en'?row[2]:row[3];
@@ -1298,6 +1297,7 @@ const a1QuizTranslations={
   'Was kannst du nach A1-Anfang schon tun?':'ماذا يمكنك أن تفعل بعد بداية مستوى A1؟'
  }
 };
+auditA1HelperTranslations();
 function a1QuizHelp(text){
  const l=helperLang();
  return a1QuizTranslations[l]?.[text] || a1TextHelp(text);
