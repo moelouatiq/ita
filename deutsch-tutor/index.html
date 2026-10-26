@@ -522,10 +522,13 @@ function sentenceHelpText(de,frFallback=''){
 }
 function sentenceHelpButton(de,frFallback=''){
  const help=sentenceHelpText(de,frFallback);
+ if(!help || /Traduction non disponible|Translation not available|الترجمة غير متوفرة/.test(help)) return '';
  return `<button type="button" class="iconBtn sentenceHelp" title="Hilfe anzeigen" aria-label="Hilfe anzeigen" data-help="${String(help).replace(/"/g,'&quot;')}">${helperLabels[helperLang()]}</button>`;
 }
 function directHelpButton(help){
- return `<button type="button" class="iconBtn sentenceHelp" title="Hilfe anzeigen" aria-label="Hilfe anzeigen" data-help="${String(help).replace(/"/g,'&quot;')}">${helperLabels[helperLang()]}</button>`;
+ const h=String(help||'').trim();
+ if(!h || /Traduction non disponible|Translation not available|الترجمة غير متوفرة/.test(h)) return '';
+ return `<button type="button" class="iconBtn sentenceHelp" title="Hilfe anzeigen" aria-label="Hilfe anzeigen" data-help="${h.replace(/"/g,'&quot;')}">${helperLabels[helperLang()]}</button>`;
 }
 const courseDe={
 0:{intro:'Willkommen! Heute brauchst du noch keine Grammatik. Du lernst zuerst, jemanden zu begrüßen, deinen Namen zu sagen und zwei sehr einfache Fragen zu verstehen.',rule:'Für heute reichen feste Ausdrücke. Höre sie, sprich sie nach und benutze sie als ganze Bausteine.',steps:['Höre zuerst nur zu.','Sprich jeden Ausdruck zwei- oder dreimal laut nach.','Verbinde danach Begrüßung + Name: Hallo! Ich heiße …','Übe zum Schluss einen Mini-Dialog.'],tip:'Versuche heute nicht, jedes deutsche Wort zu analysieren. Lerne zuerst den Klang und die Bedeutung des ganzen Ausdrucks.',error:'Am ersten Tag ist ein Fehler völlig normal. Wichtig ist: hören → nachsprechen → selbst sagen.'},
@@ -632,6 +635,25 @@ function upd(i){let s=step(i);['course','read','listen','speak'].forEach(k=>docu
 
 const a1TextTranslations={
  fr:{
+  'Hallo! Ich heiße Mia.':'Bonjour ! Je m’appelle Mia.',
+  'Ich heiße Samir. Ich komme aus Marokko. Ich spreche Arabisch und Französisch.':'Je m’appelle Samir. Je viens du Maroc. Je parle arabe et français.',
+  'Ich bin 30 Jahre alt. Ich habe zwei Kinder.':'J’ai 30 ans. J’ai deux enfants.',
+  'Mein Termin ist um zehn Uhr. Ich bin vierzig Jahre alt.':'Mon rendez-vous est à dix heures. J’ai quarante ans.',
+  'Wo wohnst du? Ich wohne in Köln. Wie heißt du? Ich heiße Nina.':'Où habites-tu ? J’habite à Cologne. Comment t’appelles-tu ? Je m’appelle Nina.',
+  'Das ist ein Tisch. Der Tisch ist neu. Das ist eine Lampe. Die Lampe ist klein.':'C’est une table. La table est neuve. C’est une lampe. La lampe est petite.',
+  'Ich heiße Mia, komme aus Spanien und wohne in Hamburg. Ich bin 25 Jahre alt und lerne Deutsch.':'Je m’appelle Mia, je viens d’Espagne et j’habite à Hambourg. J’ai 25 ans et j’apprends l’allemand.',
+  'Guten Tag! Ich heiße Paul.':'Bonjour ! Je m’appelle Paul.',
+  'Ich heiße Lea. Ich komme aus Deutschland und spreche Deutsch.':'Je m’appelle Lea. Je viens d’Allemagne et je parle allemand.',
+  'Ich bin müde, aber ich habe heute Zeit.':'Je suis fatigué, mais j’ai du temps aujourd’hui.',
+  'Der Kurs beginnt um neun Uhr.':'Le cours commence à neuf heures.',
+  'Was machst du? Ich lerne Deutsch.':'Que fais-tu ? J’apprends l’allemand.',
+  'Das ist ein Buch. Das Buch ist interessant.':'C’est un livre. Le livre est intéressant.',
+  'Hallo! Ich heiße Omar. Ich bin 28 Jahre alt und spreche Arabisch und ein bisschen Deutsch.':'Bonjour ! Je m’appelle Omar. J’ai 28 ans et je parle arabe et un peu allemand.',
+  'Hallo!':'Bonjour !',
+  'Ich heiße Anna. Wie heißt du?':'Je m’appelle Anna. Comment t’appelles-tu ?',
+  'Tschüss!':'Au revoir !',
+  'Hallo! Ich heiße Lina.':'Bonjour ! Je m’appelle Lina.',
+  'Wie heißt du?':'Comment t’appelles-tu ?',
   'Sage laut: Hallo! Ich heiße ... Wie heißt du?':'Dis à voix haute : Bonjour ! Je m’appelle ... Comment t’appelles-tu ?',
   'Stelle dich in vier kurzen Sätzen vor.':'Présente-toi en quatre phrases courtes.',
   'Bilde vier Sätze mit „Ich bin“ und „Ich habe“.':'Forme quatre phrases avec « Ich bin » et « Ich habe ».',
@@ -689,6 +711,25 @@ const a1TextTranslations={
  'Benutze kurze, sichere Sätze. Du musst noch nicht schnell sprechen.':'Utilise des phrases courtes et sûres. Tu n’as pas encore besoin de parler vite.'
  },
  en:{
+  'Hallo! Ich heiße Mia.':'Hello! My name is Mia.',
+  'Ich heiße Samir. Ich komme aus Marokko. Ich spreche Arabisch und Französisch.':'My name is Samir. I come from Morocco. I speak Arabic and French.',
+  'Ich bin 30 Jahre alt. Ich habe zwei Kinder.':'I am 30 years old. I have two children.',
+  'Mein Termin ist um zehn Uhr. Ich bin vierzig Jahre alt.':'My appointment is at ten o’clock. I am forty years old.',
+  'Wo wohnst du? Ich wohne in Köln. Wie heißt du? Ich heiße Nina.':'Where do you live? I live in Cologne. What is your name? My name is Nina.',
+  'Das ist ein Tisch. Der Tisch ist neu. Das ist eine Lampe. Die Lampe ist klein.':'This is a table. The table is new. This is a lamp. The lamp is small.',
+  'Ich heiße Mia, komme aus Spanien und wohne in Hamburg. Ich bin 25 Jahre alt und lerne Deutsch.':'My name is Mia, I come from Spain and live in Hamburg. I am 25 years old and I am learning German.',
+  'Guten Tag! Ich heiße Paul.':'Hello! My name is Paul.',
+  'Ich heiße Lea. Ich komme aus Deutschland und spreche Deutsch.':'My name is Lea. I come from Germany and speak German.',
+  'Ich bin müde, aber ich habe heute Zeit.':'I am tired, but I have time today.',
+  'Der Kurs beginnt um neun Uhr.':'The course starts at nine o’clock.',
+  'Was machst du? Ich lerne Deutsch.':'What are you doing? I am learning German.',
+  'Das ist ein Buch. Das Buch ist interessant.':'This is a book. The book is interesting.',
+  'Hallo! Ich heiße Omar. Ich bin 28 Jahre alt und spreche Arabisch und ein bisschen Deutsch.':'Hello! My name is Omar. I am 28 years old and I speak Arabic and a little German.',
+  'Hallo!':'Hello!',
+  'Ich heiße Anna. Wie heißt du?':'My name is Anna. What is your name?',
+  'Tschüss!':'Bye!',
+  'Hallo! Ich heiße Lina.':'Hello! My name is Lina.',
+  'Wie heißt du?':'What is your name?',
   'Sage laut: Hallo! Ich heiße ... Wie heißt du?':'Say aloud: Hello! My name is ... What is your name?',
   'Stelle dich in vier kurzen Sätzen vor.':'Introduce yourself in four short sentences.',
   'Bilde vier Sätze mit „Ich bin“ und „Ich habe“.':'Make four sentences with “Ich bin” and “Ich habe”.',
@@ -745,6 +786,25 @@ const a1TextTranslations={
  'Benutze kurze, sichere Sätze. Du musst noch nicht schnell sprechen.':'Use short, confident sentences. You do not need to speak fast yet.'
  },
  ar:{
+  'Hallo! Ich heiße Mia.':'مرحبًا! اسمي ميا.',
+  'Ich heiße Samir. Ich komme aus Marokko. Ich spreche Arabisch und Französisch.':'اسمي سمير. أنا من المغرب. أتحدث العربية والفرنسية.',
+  'Ich bin 30 Jahre alt. Ich habe zwei Kinder.':'عمري 30 سنة. لدي طفلان.',
+  'Mein Termin ist um zehn Uhr. Ich bin vierzig Jahre alt.':'موعدي الساعة العاشرة. عمري أربعون سنة.',
+  'Wo wohnst du? Ich wohne in Köln. Wie heißt du? Ich heiße Nina.':'أين تسكن؟ أسكن في كولونيا. ما اسمك؟ اسمي نينا.',
+  'Das ist ein Tisch. Der Tisch ist neu. Das ist eine Lampe. Die Lampe ist klein.':'هذه طاولة. الطاولة جديدة. هذا مصباح. المصباح صغير.',
+  'Ich heiße Mia, komme aus Spanien und wohne in Hamburg. Ich bin 25 Jahre alt und lerne Deutsch.':'اسمي ميا، أنا من إسبانيا وأسكن في هامبورغ. عمري 25 سنة وأتعلم الألمانية.',
+  'Guten Tag! Ich heiße Paul.':'مرحبًا! اسمي بول.',
+  'Ich heiße Lea. Ich komme aus Deutschland und spreche Deutsch.':'اسمي ليا. أنا من ألمانيا وأتحدث الألمانية.',
+  'Ich bin müde, aber ich habe heute Zeit.':'أنا متعب، لكن لدي وقت اليوم.',
+  'Der Kurs beginnt um neun Uhr.':'تبدأ الدورة الساعة التاسعة.',
+  'Was machst du? Ich lerne Deutsch.':'ماذا تفعل؟ أتعلم الألمانية.',
+  'Das ist ein Buch. Das Buch ist interessant.':'هذا كتاب. الكتاب ممتع.',
+  'Hallo! Ich heiße Omar. Ich bin 28 Jahre alt und spreche Arabisch und ein bisschen Deutsch.':'مرحبًا! اسمي عمر. عمري 28 سنة وأتحدث العربية وقليلًا من الألمانية.',
+  'Hallo!':'مرحبًا!',
+  'Ich heiße Anna. Wie heißt du?':'اسمي آنا. ما اسمك؟',
+  'Tschüss!':'إلى اللقاء!',
+  'Hallo! Ich heiße Lina.':'مرحبًا! اسمي لينا.',
+  'Wie heißt du?':'ما اسمك؟',
   'Sage laut: Hallo! Ich heiße ... Wie heißt du?':'قل بصوت مرتفع: مرحبًا! اسمي ... ما اسمك؟',
   'Stelle dich in vier kurzen Sätzen vor.':'قدّم نفسك في أربع جمل قصيرة.',
   'Bilde vier Sätze mit „Ich bin“ und „Ich habe“.':'كوّن أربع جمل باستعمال «Ich bin» و «Ich habe».',
@@ -1011,6 +1071,19 @@ const a1Curriculum=[
 }
 ];
 
+
+function auditA1HelperTranslations(){
+ const missing=[];
+ const langs=['fr','en','ar'];
+ a1Curriculum.forEach((L,i)=>{
+  const texts=[L.goal,L.rule,L.task,L.read,...L.dialogue];
+  texts.forEach(t=>langs.forEach(lang=>{if(!a1TextTranslations[lang]?.[t]) missing.push(`A1 J${i+1} ${lang}: ${t}`)}));
+  [L.readQ[0],L.listenQ[0],...L.quiz.map(q=>q[0])].forEach(t=>langs.forEach(lang=>{if(!a1QuizTranslations[lang]?.[t]) missing.push(`A1 J${i+1} question ${lang}: ${t}`)}));
+ });
+ if(missing.length){console.error('A1 helper translation audit failed',missing);throw new Error('A1 helper translations missing: '+missing.length)}
+ return true;
+}
+auditA1HelperTranslations();
 function a1Help(row){
  const l=helperLang();
  return l==='fr'?row[1]:l==='en'?row[2]:row[3];
@@ -1021,6 +1094,19 @@ function a1PhraseCard(row){
 
 const a1QuizTranslations={
  fr:{
+  'Wie heißt die Person?':'Comment s’appelle la personne ?',
+  'Woher kommt Samir?':'D’où vient Samir ?',
+  'Wie viele Kinder hat die Person?':'Combien d’enfants la personne a-t-elle ?',
+  'Wann ist der Termin?':'À quelle heure est le rendez-vous ?',
+  'Wo wohnt Nina?':'Où habite Nina ?',
+  'Was ist klein?':'Qu’est-ce qui est petit ?',
+  'Wo wohnt Mia?':'Où habite Mia ?',
+  'Welche Sprache spricht Lea?':'Quelle langue parle Lea ?',
+  'Was hat die Person heute?':'Qu’est-ce que la personne a aujourd’hui ?',
+  'Wann beginnt der Kurs?':'Quand commence le cours ?',
+  'Was macht die Person?':'Que fait la personne ?',
+  'Was ist interessant?':'Qu’est-ce qui est intéressant ?',
+  'Wie alt ist Omar?':'Quel âge a Omar ?',
   'Was bedeutet „Hallo“?':'Que signifie « Hallo » ?',
   'Was bedeutet „Tschüss“?':'Que signifie « Tschüss » ?',
   'Wie sagst du deinen Namen?':'Comment dis-tu ton nom ?',
@@ -1076,6 +1162,19 @@ const a1QuizTranslations={
   'Was kannst du nach A1-Anfang schon tun?':'Que peux-tu déjà faire après ce début de niveau A1 ?'
  },
  en:{
+  'Wie heißt die Person?':'What is the person’s name?',
+  'Woher kommt Samir?':'Where is Samir from?',
+  'Wie viele Kinder hat die Person?':'How many children does the person have?',
+  'Wann ist der Termin?':'When is the appointment?',
+  'Wo wohnt Nina?':'Where does Nina live?',
+  'Was ist klein?':'What is small?',
+  'Wo wohnt Mia?':'Where does Mia live?',
+  'Welche Sprache spricht Lea?':'Which language does Lea speak?',
+  'Was hat die Person heute?':'What does the person have today?',
+  'Wann beginnt der Kurs?':'When does the course begin?',
+  'Was macht die Person?':'What is the person doing?',
+  'Was ist interessant?':'What is interesting?',
+  'Wie alt ist Omar?':'How old is Omar?',
   'Was bedeutet „Hallo“?':'What does “Hallo” mean?',
   'Was bedeutet „Tschüss“?':'What does “Tschüss” mean?',
   'Wie sagst du deinen Namen?':'How do you say your name?',
@@ -1131,6 +1230,19 @@ const a1QuizTranslations={
   'Was kannst du nach A1-Anfang schon tun?':'What can you already do after this beginning of A1?'
  },
  ar:{
+  'Wie heißt die Person?':'ما اسم الشخص؟',
+  'Woher kommt Samir?':'من أين سمير؟',
+  'Wie viele Kinder hat die Person?':'كم عدد أطفال هذا الشخص؟',
+  'Wann ist der Termin?':'متى الموعد؟',
+  'Wo wohnt Nina?':'أين تسكن نينا؟',
+  'Was ist klein?':'ما الشيء الصغير؟',
+  'Wo wohnt Mia?':'أين تسكن ميا؟',
+  'Welche Sprache spricht Lea?':'ما اللغة التي تتحدثها ليا؟',
+  'Was hat die Person heute?':'ماذا لدى الشخص اليوم؟',
+  'Wann beginnt der Kurs?':'متى تبدأ الدورة؟',
+  'Was macht die Person?':'ماذا يفعل الشخص؟',
+  'Was ist interessant?':'ما الشيء المثير للاهتمام؟',
+  'Wie alt ist Omar?':'كم عمر عمر؟',
   'Was bedeutet „Hallo“?':'ماذا تعني «Hallo»؟',
   'Was bedeutet „Tschüss“?':'ماذا تعني «Tschüss»؟',
   'Wie sagst du deinen Namen?':'كيف تقول اسمك؟',
@@ -1224,8 +1336,8 @@ function renderA1(i,s){
  <div class="section"><div class="box"><h3>1 · 👂 Hören und nachsprechen</h3><p class="small">Höre jeden Ausdruck und sprich ihn zweimal laut nach. ${directHelpButton(helperLang()==='fr'?'Écoute chaque expression et répète-la deux fois à voix haute.':helperLang()==='ar'?'استمع إلى كل عبارة وكررها مرتين بصوت مرتفع.':'Listen to each expression and repeat it aloud twice.')}</p>${L.phrases.map(a1PhraseCard).join('')}<div class="actions"><button class="btn primary" id="a1CourseDone">Diesen Teil abschließen</button></div></div></div>
  <div class="section"><div class="box"><h3>2 · 💬 Mini-Dialog</h3><div class="miniDialogue">${L.dialogue.map((x,n)=>`<p><b>${n%2===0?'A':'B'}:</b> ${x} ${directHelpButton(a1TextHelp(x))}</p>`).join('')}</div><div class="actions"><button class="btn secondary" id="a1DialogPlay">▶ Dialog hören</button></div></div></div>
  <div class="section"><div class="box"><h3>3 · 🧩 Mini-Regel</h3><div class="rule">${L.rule} ${directHelpButton(a1TextHelp(L.rule))}</div></div></div>
- <div class="section"><h3>📖 Lesen</h3><div class="box"><div class="transcript">${L.read} ${directHelpButton(a1TextHelp(L.read))}</div><div class="q"><b>${L.readQ[0]} ${a1AudioButton(L.readQ[0])} ${directHelpButton(qHelp(L.readQ[0]))}</b>${L.readQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1read" value="${j}"> ${o}${maybeAudioForOption(o)}</label>`).join('')}</div><button class="btn primary" id="a1ReadBtn">Lesen prüfen</button><div id="a1ReadFb" class="small"></div></div></div>
- <div class="section"><h3>🎧 Hören</h3><div class="box"><div class="actions"><button class="btn primary" id="a1ListenPlay">▶ Anhören</button><button class="btn secondary" id="a1ListenSlow">🐢 Langsam</button></div><div class="q"><b>${L.listenQ[0]} ${a1AudioButton(L.listenQ[0])} ${directHelpButton(qHelp(L.listenQ[0]))}</b>${L.listenQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1listen" value="${j}"> ${o}${maybeAudioForOption(o)}</label>`).join('')}</div><button class="btn primary" id="a1ListenBtn">Hören prüfen</button><div id="a1ListenFb" class="small"></div></div></div>
+ <div class="section"><h3>📖 Lesen</h3><div class="box"><div class="transcript">${L.read} ${directHelpButton(a1TextHelp(L.read))}</div><div class="q"><b>${L.readQ[0]} ${a1AudioButton(L.readQ[0])} ${directHelpButton(a1QuizHelp(L.readQ[0]))}</b>${L.readQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1read" value="${j}"> ${o}${maybeAudioForOption(o)}</label>`).join('')}</div><button class="btn primary" id="a1ReadBtn">Lesen prüfen</button><div id="a1ReadFb" class="small"></div></div></div>
+ <div class="section"><h3>🎧 Hören</h3><div class="box"><div class="actions"><button class="btn primary" id="a1ListenPlay">▶ Anhören</button><button class="btn secondary" id="a1ListenSlow">🐢 Langsam</button></div><div class="q"><b>${L.listenQ[0]} ${a1AudioButton(L.listenQ[0])} ${directHelpButton(a1QuizHelp(L.listenQ[0]))}</b>${L.listenQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1listen" value="${j}"> ${o}${maybeAudioForOption(o)}</label>`).join('')}</div><button class="btn primary" id="a1ListenBtn">Hören prüfen</button><div id="a1ListenFb" class="small"></div></div></div>
  <div class="section"><h3>🎙 Sprechen</h3><div class="box"><div class="mission"><b>Aufgabe:</b> ${L.task} ${directHelpButton(a1TextTranslations[helperLang()]?.[L.task] || a1TextHelp(L.task))}</div><textarea id="a1SpeechText" placeholder="Schreibe hier, was du gesagt hast ...">${speech}</textarea><div class="actions"><button class="btn primary" id="a1SpeakBtn">Sprechen bestätigen</button></div><div id="a1SpeakFb" class="small"></div></div></div>
  <div class="section ${s.course&&s.read&&s.listen&&s.speak?'':'hidden'}" id="a1Test"><h3>📝 Abschlusstest</h3><p class="small">10 Fragen · 9/10 minimum.</p><form id="a1Form">${q.map((qq,n)=>`<div class="q"><b>${n+1}. ${qq.q} ${a1AudioButton(qq.q)} ${directHelpButton(a1QuizHelp(qq.q))}</b>${qq.opts.map((o,j)=>`<label class="opt"><input type="radio" name="a1q${n}" value="${j}"> ${o}${maybeAudioForOption(o)}${maybeHelpForOption(o)}</label>`).join('')}</div>`).join('')}<button class="btn primary">Auswerten</button></form><div id="a1Res"></div></div>`;
 
