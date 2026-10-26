@@ -982,6 +982,193 @@ function a1Help(row){
 function a1PhraseCard(row){
  return `<div class="phraseCard"><div class="phraseBig">${row[0]} ${directHelpButton(a1Help(row))}</div><div class="phraseActions"><button type="button" class="btn secondary speakText" data-text="${row[0].replace(/"/g,'&quot;')}">🔊 Hören</button></div></div>`;
 }
+
+const a1QuizTranslations={
+ fr:{
+  'Was bedeutet „Hallo“?':'Que signifie « Hallo » ?',
+  'Was bedeutet „Tschüss“?':'Que signifie « Tschüss » ?',
+  'Wie sagst du deinen Namen?':'Comment dis-tu ton nom ?',
+  'Was bedeutet „Wie heißt du?“':'Que signifie « Wie heißt du? » ?',
+  'Welche Begrüßung passt am Morgen?':'Quelle salutation convient le matin ?',
+  'Welche Antwort passt zu „Wie heißt du?“':'Quelle réponse convient à « Wie heißt du? » ?',
+  'Welche Form ist eine Begrüßung?':'Quelle expression est une salutation ?',
+  'Was hörst du zuerst?':'Qu’entends-tu en premier ?',
+  'Welcher Satz ist vollständig?':'Quelle phrase est complète ?',
+  'Was ist das Ziel dieser Lektion?':'Quel est l’objectif de cette leçon ?',
+  'Wie sagst du „Je parle français“?':'Comment dis-tu « Je parle français » ?',
+  'Welche Frage fragt nach dem Herkunftsland?':'Quelle question demande le pays d’origine ?',
+  'Welche Antwort passt? „Woher kommst du?“':'Quelle réponse convient à « Woher kommst du? » ?',
+  'Was bedeutet „Ich wohne in Köln“?':'Que signifie « Ich wohne in Köln » ?',
+  'Welcher Satz nennt eine Sprache?':'Quelle phrase mentionne une langue ?',
+  'Welche Form ist korrekt?':'Quelle forme est correcte ?',
+  'Welche Frage passt zu „Ich spreche Arabisch“?':'Quelle question convient à « Ich spreche Arabisch » ?',
+  'Was ist das Ziel?':'Quel est l’objectif ?',
+  'Wie heißt die richtige Form?':'Quelle est la forme correcte ?',
+  'Wie sagst du „J’ai du temps“?':'Comment dis-tu « J’ai du temps » ?',
+  'Welche Form passt zu du?':'Quelle forme convient avec « du » ?',
+  'Was bedeutet „Ich bin müde“?':'Que signifie « Ich bin müde » ?',
+  'Was bedeutet „Ich habe Zeit“?':'Que signifie « Ich habe Zeit » ?',
+  'Welche Antwort passt zu „Bist du müde?“':'Quelle réponse convient à « Bist du müde? » ?',
+  'Was ist „sein“?':'Que signifie « sein » ?',
+  'Was bedeutet „zwei“?':'Que signifie « zwei » ?',
+  'Was bedeutet „zehn“?':'Que signifie « zehn » ?',
+  'Wie sagst du „J’ai 40 ans“?':'Comment dis-tu « J’ai 40 ans » ?',
+  'Wie sagst du 10 Uhr?':'Comment dis-tu 10 heures ?',
+  'Welche Frage fragt nach dem Alter?':'Quelle question demande l’âge ?',
+  'Welche Frage fragt nach der Uhrzeit?':'Quelle question demande l’heure ?',
+  'Was bedeutet „Es ist neun Uhr“?':'Que signifie « Es ist neun Uhr » ?',
+  'Was bedeutet „um zehn Uhr“?':'Que signifie « um zehn Uhr » ?',
+  'Was bedeutet „wer“?':'Que signifie « wer » ?',
+  'Was bedeutet „wo“?':'Que signifie « wo » ?',
+  'Welche Frage ist korrekt?':'Quelle question est correcte ?',
+  'Welche Frage fragt nach dem Namen?':'Quelle question demande le nom ?',
+  'Welche Frage fragt nach einer Person?':'Quelle question demande une personne ?',
+  'Was bedeutet „Was machst du?“':'Que signifie « Was machst du? » ?',
+  'Welche Antwort passt zu „Wo wohnst du?“':'Quelle réponse convient à « Wo wohnst du? » ?',
+  'Welche Reihenfolge ist richtig?':'Quel ordre est correct ?',
+  'Welcher Artikel gehört zu Tisch?':'Quel article va avec « Tisch » ?',
+  'Welcher Artikel gehört zu Lampe?':'Quel article va avec « Lampe » ?',
+  'Welcher Artikel gehört zu Buch?':'Quel article va avec « Buch » ?',
+  'Welche Form passt?':'Quelle forme convient ?',
+  'Was bedeutet „Das ist ein Buch“?':'Que signifie « Das ist ein Buch » ?',
+  'Wie lernst du ein neues Nomen am besten?':'Comment apprendre au mieux un nouveau nom ?',
+  'Welche Gruppe ist korrekt?':'Quel groupe est correct ?',
+  'Wie begrüßt du jemanden?':'Comment salues-tu quelqu’un ?',
+  'Wie sagst du dein Herkunftsland?':'Comment dis-tu ton pays d’origine ?',
+  'Welche Frage fragt nach dem Wohnort?':'Quelle question demande le lieu d’habitation ?',
+  'Welche Antwort passt zu „Woher kommst du?“':'Quelle réponse convient à « Woher kommst du? » ?',
+  'Was kannst du nach A1-Anfang schon tun?':'Que peux-tu déjà faire après ce début de niveau A1 ?'
+ },
+ en:{
+  'Was bedeutet „Hallo“?':'What does “Hallo” mean?',
+  'Was bedeutet „Tschüss“?':'What does “Tschüss” mean?',
+  'Wie sagst du deinen Namen?':'How do you say your name?',
+  'Was bedeutet „Wie heißt du?“':'What does “Wie heißt du?” mean?',
+  'Welche Begrüßung passt am Morgen?':'Which greeting is used in the morning?',
+  'Welche Antwort passt zu „Wie heißt du?“':'Which answer fits “Wie heißt du?”',
+  'Welche Form ist eine Begrüßung?':'Which expression is a greeting?',
+  'Was hörst du zuerst?':'What do you hear first?',
+  'Welcher Satz ist vollständig?':'Which sentence is complete?',
+  'Was ist das Ziel dieser Lektion?':'What is the goal of this lesson?',
+  'Wie sagst du „Je parle français“?':'How do you say “I speak French”?',
+  'Welche Frage fragt nach dem Herkunftsland?':'Which question asks about country of origin?',
+  'Welche Antwort passt? „Woher kommst du?“':'Which answer fits “Woher kommst du?”',
+  'Was bedeutet „Ich wohne in Köln“?':'What does “Ich wohne in Köln” mean?',
+  'Welcher Satz nennt eine Sprache?':'Which sentence names a language?',
+  'Welche Form ist korrekt?':'Which form is correct?',
+  'Welche Frage passt zu „Ich spreche Arabisch“?':'Which question fits “Ich spreche Arabisch”?',
+  'Was ist das Ziel?':'What is the goal?',
+  'Wie heißt die richtige Form?':'Which form is correct?',
+  'Wie sagst du „J’ai du temps“?':'How do you say “I have time”?',
+  'Welche Form passt zu du?':'Which form goes with “du”?',
+  'Was bedeutet „Ich bin müde“?':'What does “Ich bin müde” mean?',
+  'Was bedeutet „Ich habe Zeit“?':'What does “Ich habe Zeit” mean?',
+  'Welche Antwort passt zu „Bist du müde?“':'Which answer fits “Bist du müde?”',
+  'Was ist „sein“?':'What does “sein” mean?',
+  'Was bedeutet „zwei“?':'What does “zwei” mean?',
+  'Was bedeutet „zehn“?':'What does “zehn” mean?',
+  'Wie sagst du „J’ai 40 ans“?':'How do you say “I am 40 years old”?',
+  'Wie sagst du 10 Uhr?':'How do you say 10 o’clock?',
+  'Welche Frage fragt nach dem Alter?':'Which question asks about age?',
+  'Welche Frage fragt nach der Uhrzeit?':'Which question asks for the time?',
+  'Was bedeutet „Es ist neun Uhr“?':'What does “Es ist neun Uhr” mean?',
+  'Was bedeutet „um zehn Uhr“?':'What does “um zehn Uhr” mean?',
+  'Was bedeutet „wer“?':'What does “wer” mean?',
+  'Was bedeutet „wo“?':'What does “wo” mean?',
+  'Welche Frage ist korrekt?':'Which question is correct?',
+  'Welche Frage fragt nach dem Namen?':'Which question asks for the name?',
+  'Welche Frage fragt nach einer Person?':'Which question asks about a person?',
+  'Was bedeutet „Was machst du?“':'What does “Was machst du?” mean?',
+  'Welche Antwort passt zu „Wo wohnst du?“':'Which answer fits “Wo wohnst du?”',
+  'Welche Reihenfolge ist richtig?':'Which word order is correct?',
+  'Welcher Artikel gehört zu Tisch?':'Which article goes with “Tisch”?',
+  'Welcher Artikel gehört zu Lampe?':'Which article goes with “Lampe”?',
+  'Welcher Artikel gehört zu Buch?':'Which article goes with “Buch”?',
+  'Welche Form passt?':'Which form fits?',
+  'Was bedeutet „Das ist ein Buch“?':'What does “Das ist ein Buch” mean?',
+  'Wie lernst du ein neues Nomen am besten?':'What is the best way to learn a new noun?',
+  'Welche Gruppe ist korrekt?':'Which group is correct?',
+  'Wie begrüßt du jemanden?':'How do you greet someone?',
+  'Wie sagst du dein Herkunftsland?':'How do you say your country of origin?',
+  'Welche Frage fragt nach dem Wohnort?':'Which question asks where someone lives?',
+  'Welche Antwort passt zu „Woher kommst du?“':'Which answer fits “Woher kommst du?”',
+  'Was kannst du nach A1-Anfang schon tun?':'What can you already do after this beginning of A1?'
+ },
+ ar:{
+  'Was bedeutet „Hallo“?':'ماذا تعني «Hallo»؟',
+  'Was bedeutet „Tschüss“?':'ماذا تعني «Tschüss»؟',
+  'Wie sagst du deinen Namen?':'كيف تقول اسمك؟',
+  'Was bedeutet „Wie heißt du?“':'ماذا تعني «Wie heißt du?»؟',
+  'Welche Begrüßung passt am Morgen?':'ما التحية المناسبة في الصباح؟',
+  'Welche Antwort passt zu „Wie heißt du?“':'ما الإجابة المناسبة لـ «Wie heißt du?»؟',
+  'Welche Form ist eine Begrüßung?':'أي تعبير يُستخدم للتحية؟',
+  'Was hörst du zuerst?':'ماذا تسمع أولاً؟',
+  'Welcher Satz ist vollständig?':'أي جملة كاملة؟',
+  'Was ist das Ziel dieser Lektion?':'ما هدف هذا الدرس؟',
+  'Wie sagst du „Je parle français“?':'كيف تقول «أنا أتحدث الفرنسية»؟',
+  'Welche Frage fragt nach dem Herkunftsland?':'أي سؤال يسأل عن بلد الأصل؟',
+  'Welche Antwort passt? „Woher kommst du?“':'ما الإجابة المناسبة لـ «Woher kommst du?»؟',
+  'Was bedeutet „Ich wohne in Köln“?':'ماذا تعني «Ich wohne in Köln»؟',
+  'Welcher Satz nennt eine Sprache?':'أي جملة تذكر لغة؟',
+  'Welche Form ist korrekt?':'أي صيغة صحيحة؟',
+  'Welche Frage passt zu „Ich spreche Arabisch“?':'أي سؤال يناسب «Ich spreche Arabisch»؟',
+  'Was ist das Ziel?':'ما الهدف؟',
+  'Wie heißt die richtige Form?':'ما الصيغة الصحيحة؟',
+  'Wie sagst du „J’ai du temps“?':'كيف تقول «لدي وقت»؟',
+  'Welche Form passt zu du?':'أي صيغة تناسب «du»؟',
+  'Was bedeutet „Ich bin müde“?':'ماذا تعني «Ich bin müde»؟',
+  'Was bedeutet „Ich habe Zeit“?':'ماذا تعني «Ich habe Zeit»؟',
+  'Welche Antwort passt zu „Bist du müde?“':'ما الإجابة المناسبة لـ «Bist du müde?»؟',
+  'Was ist „sein“?':'ماذا يعني «sein»؟',
+  'Was bedeutet „zwei“?':'ماذا تعني «zwei»؟',
+  'Was bedeutet „zehn“?':'ماذا تعني «zehn»؟',
+  'Wie sagst du „J’ai 40 ans“?':'كيف تقول «عمري 40 سنة»؟',
+  'Wie sagst du 10 Uhr?':'كيف تقول الساعة العاشرة؟',
+  'Welche Frage fragt nach dem Alter?':'أي سؤال يسأل عن العمر؟',
+  'Welche Frage fragt nach der Uhrzeit?':'أي سؤال يسأل عن الوقت؟',
+  'Was bedeutet „Es ist neun Uhr“?':'ماذا تعني «Es ist neun Uhr»؟',
+  'Was bedeutet „um zehn Uhr“?':'ماذا تعني «um zehn Uhr»؟',
+  'Was bedeutet „wer“?':'ماذا تعني «wer»؟',
+  'Was bedeutet „wo“?':'ماذا تعني «wo»؟',
+  'Welche Frage ist korrekt?':'أي سؤال صحيح؟',
+  'Welche Frage fragt nach dem Namen?':'أي سؤال يسأل عن الاسم؟',
+  'Welche Frage fragt nach einer Person?':'أي سؤال يسأل عن شخص؟',
+  'Was bedeutet „Was machst du?“':'ماذا تعني «Was machst du?»؟',
+  'Welche Antwort passt zu „Wo wohnst du?“':'ما الإجابة المناسبة لـ «Wo wohnst du?»؟',
+  'Welche Reihenfolge ist richtig?':'ما ترتيب الكلمات الصحيح؟',
+  'Welcher Artikel gehört zu Tisch?':'ما أداة التعريف المناسبة لـ «Tisch»؟',
+  'Welcher Artikel gehört zu Lampe?':'ما أداة التعريف المناسبة لـ «Lampe»؟',
+  'Welcher Artikel gehört zu Buch?':'ما أداة التعريف المناسبة لـ «Buch»؟',
+  'Welche Form passt?':'أي صيغة مناسبة؟',
+  'Was bedeutet „Das ist ein Buch“?':'ماذا تعني «Das ist ein Buch»؟',
+  'Wie lernst du ein neues Nomen am besten?':'ما أفضل طريقة لتعلّم اسم جديد؟',
+  'Welche Gruppe ist korrekt?':'أي مجموعة صحيحة؟',
+  'Wie begrüßt du jemanden?':'كيف تحيي شخصًا؟',
+  'Wie sagst du dein Herkunftsland?':'كيف تقول بلدك الأصلي؟',
+  'Welche Frage fragt nach dem Wohnort?':'أي سؤال يسأل عن مكان السكن؟',
+  'Welche Antwort passt zu „Woher kommst du?“':'ما الإجابة المناسبة لـ «Woher kommst du?»؟',
+  'Was kannst du nach A1-Anfang schon tun?':'ماذا يمكنك أن تفعل بعد بداية مستوى A1؟'
+ }
+};
+function a1QuizHelp(text){
+ const l=helperLang();
+ return a1QuizTranslations[l]?.[text] || a1TextHelp(text);
+}
+function a1OptionHelp(text){
+ const explicit=a1TextHelp(text);
+ if(explicit && !/non disponible|not available|غير متوفرة/.test(explicit)) return explicit;
+ const l=helperLang();
+ const common={
+  fr:{'Hallo!':'Bonjour !','Tschüss!':'Au revoir !','Guten Morgen!':'Bonjour ! (le matin)','Guten Tag!':'Bonjour !','Ich heiße Sara.':'Je m’appelle Sara.','Ich heiße Omar.':'Je m’appelle Omar.','Ich spreche Deutsch.':'Je parle allemand.','Ich komme aus Deutschland.':'Je viens d’Allemagne.','Ich wohne in Berlin.':'J’habite à Berlin.','Ich bin 30.':'J’ai 30 ans.','Ja, ich bin müde.':'Oui, je suis fatigué.','Ich habe zwei Kinder.':'J’ai deux enfants.','Ich bin 30 Jahre alt.':'J’ai 30 ans.','Ich komme aus Marokko.':'Je viens du Maroc.','Ich habe Zeit.':'J’ai du temps.','Wo wohnst du?':'Où habites-tu ?','Wie heißt du?':'Comment t’appelles-tu ?','Woher kommst du?':'D’où viens-tu ?'},
+  en:{'Hallo!':'Hello!','Tschüss!':'Bye!','Guten Morgen!':'Good morning!','Guten Tag!':'Hello!','Ich heiße Sara.':'My name is Sara.','Ich heiße Omar.':'My name is Omar.','Ich spreche Deutsch.':'I speak German.','Ich komme aus Deutschland.':'I come from Germany.','Ich wohne in Berlin.':'I live in Berlin.','Ich bin 30.':'I am 30.','Ja, ich bin müde.':'Yes, I am tired.','Ich habe zwei Kinder.':'I have two children.','Ich bin 30 Jahre alt.':'I am 30 years old.','Ich komme aus Marokko.':'I come from Morocco.','Ich habe Zeit.':'I have time.','Wo wohnst du?':'Where do you live?','Wie heißt du?':'What is your name?','Woher kommst du?':'Where are you from?'},
+  ar:{'Hallo!':'مرحبًا!','Tschüss!':'إلى اللقاء!','Guten Morgen!':'صباح الخير!','Guten Tag!':'مرحبًا!','Ich heiße Sara.':'اسمي سارة.','Ich heiße Omar.':'اسمي عمر.','Ich spreche Deutsch.':'أتحدث الألمانية.','Ich komme aus Deutschland.':'أنا من ألمانيا.','Ich wohne in Berlin.':'أسكن في برلين.','Ich bin 30.':'عمري 30 سنة.','Ja, ich bin müde.':'نعم، أنا متعب.','Ich habe zwei Kinder.':'لدي طفلان.','Ich bin 30 Jahre alt.':'عمري 30 سنة.','Ich komme aus Marokko.':'أنا من المغرب.','Ich habe Zeit.':'لدي وقت.','Wo wohnst du?':'أين تسكن؟','Wie heißt du?':'ما اسمك؟','Woher kommst du?':'من أين أنت؟'}
+ };
+ return common[l]?.[text] || '';
+}
+function maybeHelpForOption(text){
+ const h=a1OptionHelp(text);
+ return h ? ' '+directHelpButton(h) : '';
+}
 function a1QuizFor(i){
  return a1Curriculum[i].quiz.map(q=>({q:q[0],opts:q.slice(1),ans:0}));
 }
@@ -996,7 +1183,7 @@ function renderA1(i,s){
  <div class="section"><h3>📖 Lesen</h3><div class="box"><div class="transcript">${L.read} ${directHelpButton(a1TextHelp(L.read))}</div><div class="q"><b>${L.readQ[0]} ${directHelpButton(qHelp(L.readQ[0]))}</b>${L.readQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1read" value="${j}"> ${o}</label>`).join('')}</div><button class="btn primary" id="a1ReadBtn">Lesen prüfen</button><div id="a1ReadFb" class="small"></div></div></div>
  <div class="section"><h3>🎧 Hören</h3><div class="box"><div class="actions"><button class="btn primary" id="a1ListenPlay">▶ Anhören</button><button class="btn secondary" id="a1ListenSlow">🐢 Langsam</button></div><div class="q"><b>${L.listenQ[0]} ${directHelpButton(qHelp(L.listenQ[0]))}</b>${L.listenQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1listen" value="${j}"> ${o}</label>`).join('')}</div><button class="btn primary" id="a1ListenBtn">Hören prüfen</button><div id="a1ListenFb" class="small"></div></div></div>
  <div class="section"><h3>🎙 Sprechen</h3><div class="box"><div class="mission"><b>Aufgabe:</b> ${L.task} ${directHelpButton(a1TextHelp(L.task))}</div><textarea id="a1SpeechText" placeholder="Schreibe hier, was du gesagt hast ...">${speech}</textarea><div class="actions"><button class="btn primary" id="a1SpeakBtn">Sprechen bestätigen</button></div><div id="a1SpeakFb" class="small"></div></div></div>
- <div class="section ${s.course&&s.read&&s.listen&&s.speak?'':'hidden'}" id="a1Test"><h3>📝 Abschlusstest</h3><p class="small">10 Fragen · 9/10 minimum.</p><form id="a1Form">${q.map((qq,n)=>`<div class="q"><b>${n+1}. ${qq.q}</b>${qq.opts.map((o,j)=>`<label class="opt"><input type="radio" name="a1q${n}" value="${j}"> ${o}</label>`).join('')}</div>`).join('')}<button class="btn primary">Auswerten</button></form><div id="a1Res"></div></div>`;
+ <div class="section ${s.course&&s.read&&s.listen&&s.speak?'':'hidden'}" id="a1Test"><h3>📝 Abschlusstest</h3><p class="small">10 Fragen · 9/10 minimum.</p><form id="a1Form">${q.map((qq,n)=>`<div class="q"><b>${n+1}. ${qq.q} ${directHelpButton(a1QuizHelp(qq.q))}</b>${qq.opts.map((o,j)=>`<label class="opt"><input type="radio" name="a1q${n}" value="${j}"> ${o}${maybeHelpForOption(o)}</label>`).join('')}</div>`).join('')}<button class="btn primary">Auswerten</button></form><div id="a1Res"></div></div>`;
 
  document.querySelectorAll('.speakText').forEach(b=>b.onclick=()=>say(b.dataset.text,.75));
  document.querySelectorAll('.sentenceHelp').forEach(b=>b.onclick=()=>{let h=b.nextElementSibling;if(!h||!h.classList?.contains('helpText')){h=document.createElement('div');h.className='helpText';b.parentElement.insertBefore(h,b.nextSibling)}h.textContent=b.dataset.help;h.dir=helperLang()==='ar'?'rtl':'ltr';h.classList.toggle('show')});
