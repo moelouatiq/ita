@@ -158,9 +158,114 @@ const questionFr={
 };
 function qHelp(q){
  const l=helperLang();
- if(l==='ar')return questionAr[q]||questionFr[q]||'الترجمة غير متوفرة بعد.';
- if(l==='en')return questionEn[q]||questionFr[q]||'Translation not available yet.';
- return questionFr[q]||'Aide française non encore disponible pour cette question.'
+ if(l==='fr')return questionFr[q]||'Traduction non disponible.';
+ if(l==='ar'&&questionAr[q])return questionAr[q];
+ if(l==='en'&&questionEn[q])return questionEn[q];
+ const fr=questionFr[q];
+ if(!fr)return l==='ar'?'الترجمة غير متوفرة بعد.':'Translation not available yet.';
+ const full={
+  en:{
+   'Pourquoi la personne travaille-t-elle à la maison l’après-midi ?':'Why does the person work from home in the afternoon?',
+   'Pourquoi Sara apprend-elle l’allemand ?':'Why is Sara learning German?',
+   'De quoi Karim a-t-il besoin en plus de l’imprimante ?':'What does Karim need in addition to the printer?',
+   'Avec quoi Nadia va-t-elle normalement au travail ?':'How does Nadia normally travel to work?',
+   'Qu’a fait Jonas après le travail ?':'What did Jonas do after work?',
+   'Qu’est-ce qui est particulièrement important lors de la première écoute ?':'What is especially important during the first listening?',
+   'Quel est l’objectif principal de la révision ?':'What is the main goal of the review?',
+   'Pourquoi Mira comprend-elle mieux les conversations ?':'Why does Mira understand conversations better?',
+   'Qu’est-ce que Leon veut améliorer ?':'What does Leon want to improve?',
+   'Que veut faire Amina en premier ?':'What does Amina want to do first?',
+   'Quel avantage a l’appartement au centre ?':'What advantage does the apartment in the city center have?',
+   'Que fait Paul lorsqu’il ne comprend pas quelque chose ?':'What does Paul do when he does not understand something?',
+   'Que décrit Lena dans sa candidature ?':'What does Lena describe in her application?',
+   'Quelle compétence reste plus faible ?':'Which skill remains weaker?',
+   'Où David a-t-il travaillé en premier ?':'Where did David work first?',
+   'Qu’est-ce que la cliente a particulièrement apprécié ?':'What did the customer especially praise?',
+   'Qu’est-ce que l’équipe a optimisé ?':'What did the team optimize?',
+   'Que faut-il surtout reconnaître au niveau B1 ?':'What should you especially identify at B1 level?',
+   'Que souhaite savoir la personne ?':'What does the person want to know?',
+   'Que demande Samir ?':'What does Samir ask about?',
+   'Quels textes en font typiquement partie ?':'Which texts are typically included?',
+   'Quel inconvénient est mentionné ?':'Which disadvantage is mentioned?',
+   'De quoi beaucoup de personnes s’inquiètent-elles ?':'What are many people worried about?',
+   'Qu’est-ce qui est important en plus des compétences en programmation ?':'What is important besides programming skills?',
+   'Comment rendre une qualité plus crédible ?':'How can a strength be made more credible?',
+   'Que peut-on faire lorsqu’on rencontre un mot inconnu ?':'What can you do when you encounter an unknown word?',
+   'Qu’est-ce qui compte en plus du score au test ?':'What matters besides the test score?',
+   'Que se passe-t-il à partir de 80 % ?':'What happens when you reach at least 80%?',
+   'Qu’est-ce qui a quand même lieu ?':'What still takes place?',
+   'Que peut-on faire après 17 h ?':'What can you do after 5 p.m.?',
+   'Jusqu’à quand peut-on s’inscrire ?':'Until when can you register?',
+   'Qu’est-ce qui devient plus cher ?':'What becomes more expensive?',
+   'Qu’est-ce qui n’est pas nécessaire ?':'What is not necessary?',
+   'Quand reçoit-on le lien ?':'When do you receive the link?',
+   'Combien de parties comporte le test intermédiaire ?':'How many parts does the intermediate test have?',
+   'Où Mme Berger a-t-elle d’abord travaillé ?':'Where did Ms Berger work first?',
+   'Quelle expérience est recherchée ?':'What experience is being sought?',
+   'Que s’est-il passé après l’arrêt du service ?':'What happened after the service was stopped?',
+   'Pourquoi les bus passent-ils par la Parkstraße ?':'Why are the buses going via Parkstraße?',
+   'Jusqu’à quand l’entreprise prévoit-elle de répondre ?':'By when does the company plan to reply?',
+   'Quel est le montant de la caution ?':'How much is the deposit?',
+   'Que doit-on faire avant l’écoute ?':'What should you do before listening?',
+   'Que préfère la troisième personne ?':'What does the third person prefer?',
+   'Qu’est-ce qui reste possible ?':'What remains possible?',
+   'Combien de temps l’application peut-elle être indisponible ?':'How long can the application be unavailable?',
+   'Que doit expliquer le candidat ?':'What should the applicant explain?',
+   'À quoi faut-il particulièrement faire attention ?':'What should you pay particular attention to?',
+   'Que se passe-t-il après la comparaison ?':'What happens after the comparison?'
+  },
+  ar:{
+   'Pourquoi la personne travaille-t-elle à la maison l’après-midi ?':'لماذا يعمل الشخص من المنزل بعد الظهر؟',
+   'Pourquoi Sara apprend-elle l’allemand ?':'لماذا تتعلم سارة الألمانية؟',
+   'De quoi Karim a-t-il besoin en plus de l’imprimante ?':'ماذا يحتاج كريم بالإضافة إلى الطابعة؟',
+   'Avec quoi Nadia va-t-elle normalement au travail ?':'بماذا تذهب ناديا عادة إلى العمل؟',
+   'Qu’a fait Jonas après le travail ?':'ماذا فعل يوناس بعد العمل؟',
+   'Qu’est-ce qui est particulièrement important lors de la première écoute ?':'ما المهم بشكل خاص في الاستماع الأول؟',
+   'Quel est l’objectif principal de la révision ?':'ما الهدف الرئيسي من المراجعة؟',
+   'Pourquoi Mira comprend-elle mieux les conversations ?':'لماذا أصبحت ميرا تفهم المحادثات بشكل أفضل؟',
+   'Qu’est-ce que Leon veut améliorer ?':'ماذا يريد ليون أن يحسّن؟',
+   'Que veut faire Amina en premier ?':'ماذا تريد أمينة أن تفعل أولاً؟',
+   'Quel avantage a l’appartement au centre ?':'ما ميزة الشقة الموجودة في وسط المدينة؟',
+   'Que fait Paul lorsqu’il ne comprend pas quelque chose ?':'ماذا يفعل بول عندما لا يفهم شيئاً؟',
+   'Que décrit Lena dans sa candidature ?':'ماذا تصف لينا في طلب التوظيف؟',
+   'Quelle compétence reste plus faible ?':'أي مهارة ما زالت أضعف؟',
+   'Où David a-t-il travaillé en premier ?':'أين عمل دافيد أولاً؟',
+   'Qu’est-ce que la cliente a particulièrement apprécié ?':'ما الذي أعجب العميلة بشكل خاص؟',
+   'Qu’est-ce que l’équipe a optimisé ?':'ما الذي حسّنه الفريق؟',
+   'Que faut-il surtout reconnaître au niveau B1 ?':'ما الذي يجب تمييزه خصوصاً في مستوى B1؟',
+   'Que souhaite savoir la personne ?':'ماذا يريد الشخص أن يعرف؟',
+   'Que demande Samir ?':'عن ماذا يسأل سمير؟',
+   'Quels textes en font typiquement partie ?':'ما أنواع النصوص التي تدخل عادة في ذلك؟',
+   'Quel inconvénient est mentionné ?':'ما العيب المذكور؟',
+   'De quoi beaucoup de personnes s’inquiètent-elles ?':'ممّ يقلق الكثير من الناس؟',
+   'Qu’est-ce qui est important en plus des compétences en programmation ?':'ما المهم بالإضافة إلى مهارات البرمجة؟',
+   'Comment rendre une qualité plus crédible ?':'كيف يمكن جعل نقطة القوة أكثر إقناعاً؟',
+   'Que peut-on faire lorsqu’on rencontre un mot inconnu ?':'ماذا يمكن أن نفعل عند مواجهة كلمة غير معروفة؟',
+   'Qu’est-ce qui compte en plus du score au test ?':'ما الذي يهم بالإضافة إلى نتيجة الاختبار؟',
+   'Que se passe-t-il à partir de 80 % ?':'ماذا يحدث عند الوصول إلى 80٪ على الأقل؟',
+   'Qu’est-ce qui a quand même lieu ?':'ما الذي سيقام رغم ذلك؟',
+   'Que peut-on faire après 17 h ?':'ماذا يمكن فعله بعد الساعة الخامسة مساءً؟',
+   'Jusqu’à quand peut-on s’inscrire ?':'إلى متى يمكن التسجيل؟',
+   'Qu’est-ce qui devient plus cher ?':'ما الذي سيصبح أغلى؟',
+   'Qu’est-ce qui n’est pas nécessaire ?':'ما الذي ليس ضرورياً؟',
+   'Quand reçoit-on le lien ?':'متى يتم استلام الرابط؟',
+   'Combien de parties comporte le test intermédiaire ?':'كم جزءاً يتكون منه الاختبار المتوسط؟',
+   'Où Mme Berger a-t-elle d’abord travaillé ?':'أين عملت السيدة بيرغر أولاً؟',
+   'Quelle expérience est recherchée ?':'ما الخبرة المطلوبة؟',
+   'Que s’est-il passé après l’arrêt du service ?':'ماذا حدث بعد إيقاف الخدمة؟',
+   'Pourquoi les bus passent-ils par la Parkstraße ?':'لماذا تمر الحافلات عبر Parkstraße؟',
+   'Jusqu’à quand l’entreprise prévoit-elle de répondre ?':'إلى متى تخطط الشركة للرد؟',
+   'Quel est le montant de la caution ?':'كم مبلغ التأمين؟',
+   'Que doit-on faire avant l’écoute ?':'ماذا يجب أن نفعل قبل الاستماع؟',
+   'Que préfère la troisième personne ?':'ماذا يفضّل الشخص الثالث؟',
+   'Qu’est-ce qui reste possible ?':'ما الذي يبقى ممكناً؟',
+   'Combien de temps l’application peut-elle être indisponible ?':'كم من الوقت قد يكون التطبيق غير متاح؟',
+   'Que doit expliquer le candidat ?':'ماذا يجب أن يشرح المرشح؟',
+   'À quoi faut-il particulièrement faire attention ?':'إلى ماذا يجب الانتباه بشكل خاص؟',
+   'Que se passe-t-il après la comparaison ?':'ماذا يحدث بعد المقارنة؟'
+  }
+ };
+ return full[l]?.[fr]||(l==='ar'?'الترجمة غير متوفرة بعد.':'Translation not available yet.');
 }
 function helperLang(){return localStorage.getItem('deutschHelperLang')||'fr'}
 const helperLabels={fr:'❓ FR',ar:'❓ AR',en:'❓ EN'};
@@ -176,17 +281,30 @@ const courseDe={
 21:{intro:'Auf B1/B2 reicht eine einfache Meinung nicht mehr. Du solltest sie begründen, mit einem Beispiel erklären und wenn möglich differenzieren.',rule:'Eine gute Meinungsäußerung folgt oft diesem Muster: Position → Begründung → Beispiel → Gegenargument oder Nuance → Schluss.',steps:['Position: Meiner Meinung nach ...','Begründung: weil / denn ...','Beispiel nennen.','Nuance: Einerseits ..., andererseits ...','Schluss: Insgesamt denke ich, dass ...'],tip:'Eine gute B2-Antwort ist eine kleine Argumentation und nicht nur ein einzelner Satz.',error:'Vermeide nur „gut“ oder „schlecht“. Erkläre immer warum.'},
 23:{intro:'obwohl und während leiten Nebensätze ein. deshalb verbindet Hauptsätze und verändert die Wortstellung.',rule:'Nach obwohl und während steht das Verb am Ende. Nach deshalb steht das Verb auf Position 2 direkt nach deshalb.',steps:['Obwohl ich müde bin, lerne ich.','Während ich arbeite, höre ich Deutsch.','Ich habe wenig Zeit. Deshalb lerne ich morgens.'],tip:'Unterscheide: Nebensatzkonnektor = Verb am Ende; Hauptsatzkonnektor = Verb auf Position 2.',error:'Falsch: Obwohl ich bin müde. Richtig: Obwohl ich müde bin.'}
 };
+const courseHelpTranslations={
+0:{en:{intro:'In a German main clause, the conjugated verb normally occupies the second logical position.',rule:'The conjugated verb is in position 2. If the sentence starts with a time or place expression, the verb comes before the subject.',steps:'Subject first: Ich arbeite heute. • Time first: Heute arbeite ich. • The subject then comes after the verb: Am Wochenende besuche ich meine Familie.',tip:'Count sentence blocks, not individual words. “Am Wochenende” is one block.',error:'Wrong: Heute ich arbeite. Correct: Heute arbeite ich.'},ar:{intro:'في الجملة الرئيسية الألمانية يأتي الفعل المصرف عادة في الموقع المنطقي الثاني.',rule:'يأتي الفعل المصرف في الموقع الثاني. إذا بدأت الجملة بظرف زمان أو مكان، يأتي الفعل قبل الفاعل.',steps:'الفاعل أولاً: Ich arbeite heute. • الزمان أولاً: Heute arbeite ich. • بعد ذلك يأتي الفاعل بعد الفعل: Am Wochenende besuche ich meine Familie.',tip:'احسب مجموعات الجملة وليس الكلمات المفردة. «Am Wochenende» تُعد مجموعة واحدة.',error:'خطأ: Heute ich arbeite. صحيح: Heute arbeite ich.'}},
+1:{en:{intro:'weil, dass and wenn introduce subordinate clauses. In a subordinate clause, the conjugated verb goes to the end.',rule:'After weil, dass and wenn, place the conjugated verb at the end of the subordinate clause.',steps:'Main clause: Ich lerne Deutsch. • Subordinate clause: weil ich in Deutschland arbeiten möchte. • With a modal verb, the conjugated modal is at the very end.',tip:'When you see weil, dass or wenn, think immediately: the verb waits at the end.',error:'Wrong: weil ich habe Zeit. Correct: weil ich Zeit habe.'},ar:{intro:'تُدخل weil و dass و wenn جملة فرعية، وفي الجملة الفرعية يأتي الفعل المصرف في النهاية.',rule:'بعد weil و dass و wenn يأتي الفعل المصرف في نهاية الجملة الفرعية.',steps:'جملة رئيسية: Ich lerne Deutsch. • جملة فرعية: weil ich in Deutschland arbeiten möchte. • مع الفعل الناقص يأتي الفعل المصرف في النهاية تماماً.',tip:'عندما ترى weil أو dass أو wenn تذكّر فوراً: الفعل ينتظر في النهاية.',error:'خطأ: weil ich habe Zeit. صحيح: weil ich Zeit habe.'}},
+2:{en:{intro:'The accusative often marks the direct object of an action.',rule:'For masculine nouns in the accusative: der → den and ein → einen.',steps:'Ich suche einen Job. • Ask: Was suche ich? Einen Job. • Feminine and neuter forms change less in these basic patterns.',tip:'Learn frequent verbs together with their pattern: suchen + Akkusativ, brauchen + Akkusativ, besuchen + Akkusativ.',error:'Wrong: Ich suche ein Job. Correct: Ich suche einen Job.'},ar:{intro:'غالباً ما يحدد المفعول به المباشر في الألمانية حالة الـ Akkusativ.',rule:'في المذكر: der تصبح den و ein تصبح einen في حالة Akkusativ.',steps:'Ich suche einen Job. • نسأل: Was suche ich? Einen Job. • المؤنث والمحايد يتغيران بدرجة أقل في هذه الصيغ الأساسية.',tip:'احفظ الأفعال الشائعة مع حالتها: suchen + Akkusativ، brauchen + Akkusativ، besuchen + Akkusativ.',error:'خطأ: Ich suche ein Job. صحيح: Ich suche einen Job.'}},
+3:{en:{intro:'The dative is frequently used after certain prepositions such as mit, bei, von, zu and aus.',rule:'Use the dative after mit, bei, von, zu and aus.',steps:'mit dem Bus • bei meinem Bruder • mit meiner Schwester',tip:'Memorize complete chunks such as mit dem, bei meinem and mit meiner.',error:'Wrong: mit den Bus. Correct: mit dem Bus.'},ar:{intro:'تأتي حالة Dativ كثيراً بعد حروف جر مثل mit و bei و von و zu و aus.',rule:'استخدم Dativ بعد mit و bei و von و zu و aus.',steps:'mit dem Bus • bei meinem Bruder • mit meiner Schwester',tip:'احفظ تراكيب كاملة مثل mit dem و bei meinem و mit meiner.',error:'خطأ: mit den Bus. صحيح: mit dem Bus.'}},
+4:{en:{intro:'The Perfekt is the most common past tense in everyday spoken German.',rule:'Perfekt = haben or sein + past participle. The participle usually goes at the end of the sentence.',steps:'Conjugate haben or sein. • Put the participle at the end. • Movement and changes of state often use sein.',tip:'Mental pattern: subject + auxiliary + information + past participle.',error:'Wrong: Ich habe nach Berlin gefahren. Correct: Ich bin nach Berlin gefahren.'},ar:{intro:'يُعد Perfekt أكثر أزمنة الماضي استعمالاً في الألمانية المحكية اليومية.',rule:'Perfekt = haben أو sein + اسم المفعول، وغالباً يأتي اسم المفعول في نهاية الجملة.',steps:'صرّف haben أو sein. • ضع اسم المفعول في النهاية. • أفعال الحركة وتغير الحالة تستعمل sein غالباً.',tip:'النمط الذهني: الفاعل + الفعل المساعد + المعلومات + اسم المفعول.',error:'خطأ: Ich habe nach Berlin gefahren. صحيح: Ich bin nach Berlin gefahren.'}},
+7:{en:{intro:'Connectors link ideas and make your speech more natural and structured.',rule:'aber keeps normal word order. After deshalb, trotzdem and außerdem, the verb comes immediately after the connector.',steps:'Ich bin müde, aber ich lerne. • Trotzdem gehe ich raus. • Deshalb lerne ich Deutsch.',tip:'Use different connectors instead of always using und.',error:'Wrong: Deshalb ich lerne. Correct: Deshalb lerne ich.'},ar:{intro:'تربط أدوات الربط الأفكار وتجعل كلامك أكثر طبيعية وتنظيماً.',rule:'بعد aber يبقى ترتيب الكلمات عادياً. بعد deshalb و trotzdem و außerdem يأتي الفعل مباشرة.',steps:'Ich bin müde, aber ich lerne. • Trotzdem gehe ich raus. • Deshalb lerne ich Deutsch.',tip:'نوّع أدوات الربط ولا تستخدم und دائماً.',error:'خطأ: Deshalb ich lerne. صحيح: Deshalb lerne ich.'}},
+8:{en:{intro:'Modal verbs express ability, obligation, intention, advice or permission.',rule:'The modal verb is conjugated and the main verb stays in the infinitive at the end.',steps:'Ich kann Deutsch sprechen. • Ich muss heute arbeiten. • Wir wollen morgen fahren.',tip:'Think of a verb bracket: modal near the front, infinitive at the end.',error:'Wrong: Ich kann spreche Deutsch. Correct: Ich kann Deutsch sprechen.'},ar:{intro:'تعبّر الأفعال الناقصة عن القدرة أو الواجب أو الرغبة أو النصيحة أو السماح.',rule:'يُصرّف الفعل الناقص، بينما يبقى الفعل الرئيسي في المصدر في نهاية الجملة.',steps:'Ich kann Deutsch sprechen. • Ich muss heute arbeiten. • Wir wollen morgen fahren.',tip:'فكّر في قوس فعلي: الفعل الناقص في المقدمة والمصدر في النهاية.',error:'خطأ: Ich kann spreche Deutsch. صحيح: Ich kann Deutsch sprechen.'}},
+15:{en:{intro:'A relative clause adds information about a noun without starting a new main sentence.',rule:'Relative clauses often start with der, die or das, and the conjugated verb goes to the end.',steps:'Das ist die Firma, die in Berlin arbeitet. • Das ist das Projekt, das ich entwickelt habe.',tip:'First identify the noun, then choose the relative pronoun and move the verb to the end.',error:'In a relative clause, the conjugated verb goes to the end.'},ar:{intro:'تضيف الجملة الموصولة معلومات عن اسم دون بدء جملة رئيسية جديدة.',rule:'تبدأ الجمل الموصولة غالباً بـ der أو die أو das ويأتي الفعل المصرف في النهاية.',steps:'Das ist die Firma, die in Berlin arbeitet. • Das ist das Projekt, das ich entwickelt habe.',tip:'حدد الاسم أولاً، ثم اختر ضمير الوصل وضع الفعل في النهاية.',error:'في الجملة الموصولة يأتي الفعل المصرف في النهاية.'}},
+21:{en:{intro:'At B1/B2, giving an opinion is not enough: you should explain it, give an example and add nuance.',rule:'A strong opinion answer often follows: position → reason → example → nuance → conclusion.',steps:'Position: Meiner Meinung nach ... • Reason: weil / denn ... • Give an example • Nuance: Einerseits ..., andererseits ... • Conclusion.',tip:'A good B2 answer is a short argument, not a single sentence.',error:'Avoid only saying gut or schlecht. Explain why.'},ar:{intro:'في B1/B2 لا يكفي ذكر الرأي فقط؛ يجب شرحه وتقديم مثال وإضافة قدر من التوازن.',rule:'إجابة الرأي الجيدة تتبع غالباً: موقف ← سبب ← مثال ← توازن أو رأي مقابل ← خلاصة.',steps:'الموقف: Meiner Meinung nach ... • السبب: weil / denn ... • مثال • التوازن: Einerseits ..., andererseits ... • الخلاصة.',tip:'إجابة B2 الجيدة حجة قصيرة وليست جملة واحدة.',error:'تجنب الاكتفاء بـ gut أو schlecht واشرح السبب.'}},
+23:{en:{intro:'obwohl and während introduce subordinate clauses; deshalb links main clauses and changes the word order.',rule:'After obwohl and während, the verb goes to the end. After deshalb, the verb is in position 2 directly after deshalb.',steps:'Obwohl ich müde bin, lerne ich. • Während ich arbeite, höre ich Deutsch. • Deshalb lerne ich morgens.',tip:'Distinguish: subordinate-clause connector = verb at the end; main-clause connector = verb in position 2.',error:'Wrong: Obwohl ich bin müde. Correct: Obwohl ich müde bin.'},ar:{intro:'تُدخل obwohl و während جملة فرعية، بينما تربط deshalb الجمل الرئيسية وتغيّر ترتيب الكلمات.',rule:'بعد obwohl و während يأتي الفعل في النهاية. بعد deshalb يأتي الفعل في الموقع الثاني مباشرة.',steps:'Obwohl ich müde bin, lerne ich. • Während ich arbeite, höre ich Deutsch. • Deshalb lerne ich morgens.',tip:'ميّز بين أداة الجملة الفرعية: الفعل في النهاية، وأداة الجملة الرئيسية: الفعل في الموقع الثاني.',error:'خطأ: Obwohl ich bin müde. صحيح: Obwohl ich müde bin.'}}
+};
 function courseHelpText(kind,fr){
  const l=helperLang();
  if(l==='fr')return fr;
- const generic={
-  intro:{en:'What is this lesson for?',ar:'ما فائدة هذا الدرس؟'},
-  rule:{en:'Key rule explanation.',ar:'شرح القاعدة الأساسية.'},
-  steps:{en:'Step-by-step explanation.',ar:'شرح خطوة بخطوة.'},
-  tip:{en:'Learning tip.',ar:'نصيحة للتعلّم.'},
-  error:{en:'Common mistake explanation.',ar:'شرح الخطأ الشائع.'}
- };
- return generic[kind]?.[l]||fr;
+ const idx=st.cur||0;
+ const tr=courseHelpTranslations[idx]?.[l]?.[kind];
+ if(tr)return tr;
+ if(l==='ar'){
+   const g={intro:'شرح مبسط لهدف هذا الدرس.',rule:'شرح القاعدة الأساسية لهذا الدرس.',steps:'شرح خطوة بخطوة لكيفية تطبيق القاعدة.',tip:'نصيحة عملية لتثبيت القاعدة.',error:'شرح الخطأ الشائع وكيفية تصحيحه.'};
+   return g[kind]||'شرح مساعد.';
+ }
+ const g={intro:'A simple explanation of what this lesson is for.',rule:'An explanation of the key rule in this lesson.',steps:'A step-by-step explanation of how to apply the rule.',tip:'A practical learning tip.',error:'An explanation of the common mistake and how to correct it.'};
+ return g[kind]||'Helper explanation.';
 }
 function courseGerman(i,d){
  const x=courseDe[i];
@@ -242,7 +360,7 @@ function upd(i){let s=step(i);['course','read','listen','speak'].forEach(k=>docu
 function render(){side();let i=st.cur;if(!openDay(i)){main.innerHTML='<h2>🔒 Journée verrouillée</h2>';return}let d=lesson(i),cd=detailFor(i,d),gde=courseGerman(i,d),s=step(i),mat=materials[i],lvl=levelForDay(i),profile=cefr[lvl],aud=audioText(i,d),qs=quiz(i,d),speech=st.speech[i]||'';main.innerHTML=`<div class="hero"><div class="small">Semaine ${Math.floor(i/7)+1} · Jour ${i+1}</div><h2>${topics[i][0]}</h2><div class="meta"><span class="pill">📊 ${profile.label}</span><span class="pill">🎯 ${topics[i][1]}</span><span class="pill">✅ test ≥ 90 %</span>${st.done[i]?'<span class="pill">🏆 Déjà validé</span>':''}</div></div>
 <div class="section"><div class="box"><h3>🧭 Repère CECRL — ${profile.label}</h3><p><b>À ce niveau :</b> ${profile.can}</p><div class="two"><div><b>Lesen</b><p class="small">${profile.read}</p></div><div><b>Hören</b><p class="small">${profile.hear}</p></div></div><p class="small"><b>Sprechen :</b> ${profile.speak}</p></div></div>
 <div class="steps"><div class="step" id="s-course">1 · 📘 Cours</div><div class="step" id="s-read">2 · 📖 Lesen</div><div class="step" id="s-listen">3 · 🎧 Hören</div><div class="step" id="s-speak">4 · 🎙 Sprechen</div><div class="step" id="s-test">5 · 📝 Test</div></div>
-<div class="section course"><h3>📘 Lektion <span class="small">· Hilfssprache: Français</span></h3><div class="box"><h4>Wozu dient diese Lektion? ${helpBlock('intro',cd.intro)}</h4><div class="helpText"></div><p>${gde.intro}</p><h4>Die wichtigste Regel ${helpBlock('rule',d.r)}</h4><div class="helpText"></div><div class="rule">${gde.rule}</div><div class="courseDetail"><h4>Schritt für Schritt ${helpBlock('steps',cd.steps.join(' • '))}</h4><div class="helpText"></div><ul>${gde.steps.map(x=>`<li>${x}</li>`).join('')}</ul><p><b>Tipp:</b> ${gde.tip} ${helpBlock('tip',cd.tip)}</p><div class="helpText"></div></div><h4>Beispiele</h4><div class="examples">${d.e.map((x,n)=>`<div class="ex"><b>Beispiel ${n+1}</b><p>${x}</p><button type="button" class="iconBtn speakText" data-text="${x.replace(/"/g,'&quot;')}">🔊 Hören</button></div>`).join('')}</div><h4>Häufiger Fehler ${helpBlock('error',d.w)}</h4><div class="helpText"></div><div class="warn">${gde.error}</div><h4>Woher weißt du, dass du die Regel verstanden hast?</h4><ol><li>Du kannst die Regel mit eigenen Worten erklären.</li><li>Du kannst einen falschen Satz erkennen und korrigieren.</li><li>Du kannst drei eigene Sätze bilden, ohne die Beispiele zu kopieren.</li><li>Du kannst die Struktur beim Sprechen benutzen.</li></ol></div><div class="two" style="margin-top:12px"><div class="box"><h3>🧠 Aktiver Wortschatz</h3><div class="vocab">${d.v.map(x=>`<div class="vrow"><span>${x[0]}</span><span class="vright"><span>${x[1]}</span><button type="button" class="iconBtn speakText" data-text="${x[1].replace(/"/g,'&quot;')}">🔊</button></span></div>`).join('')}</div><p class="small">Klicke auf 🔊, höre genau zu und wiederhole das Wort laut.</p></div><div class="box"><h3>✍️ Geführte Übung</h3><p>Schreibe drei eigene Sätze mit der Regel dieser Lektion. <button type="button" class="iconBtn courseHelp" data-help="Écris trois phrases personnelles en utilisant la règle de cette leçon.">${helperLabels[helperLang()]}</button></p><div class="helpText"></div><textarea id="practice"></textarea><div class="actions"><button class="btn primary" id="courseDone">Lektion abgeschlossen</button></div></div></div></div>
+<div class="section course"><h3>📘 Lektion <span class="small">· Hilfssprache: ${helperLang()==='fr'?'Français':helperLang()==='ar'?'العربية':'English'}</span></h3><div class="box"><h4>Wozu dient diese Lektion? ${helpBlock('intro',cd.intro)}</h4><div class="helpText"></div><p>${gde.intro}</p><h4>Die wichtigste Regel ${helpBlock('rule',d.r)}</h4><div class="helpText"></div><div class="rule">${gde.rule}</div><div class="courseDetail"><h4>Schritt für Schritt ${helpBlock('steps',cd.steps.join(' • '))}</h4><div class="helpText"></div><ul>${gde.steps.map(x=>`<li>${x}</li>`).join('')}</ul><p><b>Tipp:</b> ${gde.tip} ${helpBlock('tip',cd.tip)}</p><div class="helpText"></div></div><h4>Beispiele</h4><div class="examples">${d.e.map((x,n)=>`<div class="ex"><b>Beispiel ${n+1}</b><p>${x}</p><button type="button" class="iconBtn speakText" data-text="${x.replace(/"/g,'&quot;')}">🔊 Hören</button></div>`).join('')}</div><h4>Häufiger Fehler ${helpBlock('error',d.w)}</h4><div class="helpText"></div><div class="warn">${gde.error}</div><h4>Woher weißt du, dass du die Regel verstanden hast?</h4><ol><li>Du kannst die Regel mit eigenen Worten erklären.</li><li>Du kannst einen falschen Satz erkennen und korrigieren.</li><li>Du kannst drei eigene Sätze bilden, ohne die Beispiele zu kopieren.</li><li>Du kannst die Struktur beim Sprechen benutzen.</li></ol></div><div class="two" style="margin-top:12px"><div class="box"><h3>🧠 Aktiver Wortschatz</h3><div class="vocab">${d.v.map(x=>`<div class="vrow"><span>${x[0]}</span><span class="vright"><span>${x[1]}</span><button type="button" class="iconBtn speakText" data-text="${x[1].replace(/"/g,'&quot;')}">🔊</button></span></div>`).join('')}</div><p class="small">Klicke auf 🔊, höre genau zu und wiederhole das Wort laut.</p></div><div class="box"><h3>✍️ Geführte Übung</h3><p>Schreibe drei eigene Sätze mit der Regel dieser Lektion. <button type="button" class="iconBtn courseHelp" data-help="${helperLang()==='fr'?'Écris trois phrases personnelles en utilisant la règle de cette leçon.':helperLang()==='ar'?'اكتب ثلاث جمل من إنشائك مستخدماً قاعدة هذا الدرس.':'Write three personal sentences using the rule from this lesson.'}">${helperLabels[helperLang()]}</button></p><div class="helpText"></div><textarea id="practice"></textarea><div class="actions"><button class="btn primary" id="courseDone">Lektion abgeschlossen</button></div></div></div></div>
 <div class="section"><h3>📖 Lesen</h3><div class="box"><p class="small">Texte original calibré ${lvl}, inspiré des formats pratiques de préparation d’examen.</p><div class="transcript">${mat.read}</div><div class="q"><b>${mat.rq[0]} <button type="button" class="iconBtn qhelp" data-help="${qHelp(mat.rq[0]).replace(/"/g,'&quot;')}">${helperLabels[helperLang()]}</button></b><div class="helpText"></div>${mat.rq.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="readq" value="${j}"> ${o}</label>`).join('')}</div><div class="actions"><button class="btn primary" id="readDone">Vérifier Lesen</button></div><div id="readFb" class="small"></div></div></div>
 <div class="section"><h3>🎧 Hören</h3><div class="box"><p>Écoute d’abord sans transcription. À partir de B1, l’objectif est de reconnaître le thème <b>et un détail précis</b>, comme dans les formats d’annonces et dialogues.</p><div class="actions"><button class="btn primary" id="play">▶ Écouter</button><button class="btn secondary" id="slow">🐢 Lent</button><button class="btn secondary" id="show">Voir transcription après réponse</button></div><div class="q"><b>${mat.lq[0]} <button type="button" class="iconBtn qhelp" data-help="${qHelp(mat.lq[0]).replace(/"/g,'&quot;')}">${helperLabels[helperLang()]}</button></b><div class="helpText"></div>${mat.lq.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="listenq" value="${j}"> ${o}</label>`).join('')}</div><div class="actions"><button class="btn primary" id="listenDone" disabled>Vérifier Hören</button></div><div id="listenFb" class="small"></div><div class="transcript hidden" id="tr">${aud}</div></div></div>
 <div class="section"><h3>🎙 Sprechen</h3><div class="box"><div class="mission"><b>Mission :</b> ${d.m}</div><p class="small">Réponds spontanément. Chrome/Edge peuvent transcrire ton allemand via le micro.</p><div class="actions"><button class="btn primary" id="mic">🎙 Parler</button><button class="btn secondary" id="stop">■ Arrêter</button></div><div class="transcript" id="spoken">${speech||'Ta transcription apparaîtra ici…'}</div><div class="small" id="fb"></div><div class="actions"><button class="btn primary" id="speakDone" ${speech.split(/\s+/).filter(Boolean).length>=8?'':'disabled'}>Valider la tentative</button><button class="btn secondary" id="manual">Micro indisponible</button></div></div></div>
