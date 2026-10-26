@@ -628,43 +628,249 @@ function quiz(i,d){
   })
 }
 function upd(i){let s=step(i);['course','read','listen','speak'].forEach(k=>document.getElementById('s-'+k)?.classList.toggle('ok',s[k]));document.getElementById('s-test')?.classList.toggle('ok',!!st.done[i]);let ready=s.course&&s.read&&s.listen&&s.speak;gate?.classList.toggle('hidden',ready);test?.classList.toggle('hidden',!ready)}
-function render(){side();let i=st.cur;if(!openDay(i)){main.innerHTML=`<h2>🔒 ${ht('locked')}</h2>`;return}let d=lesson(i),cd=detailFor(i,d),gde=courseGerman(i,d),s=step(i),mat=materials[i],lvl=levelForDay(i),profile=cefr[lvl],aud=audioText(i,d),qs=quiz(i,d),speech=st.speech[i]||'';
-if(i===0){
- const beginnerPhrases=[
-  ['Hallo!','bonjour / hello / مرحبًا'],
-  ['Guten Morgen!','bonjour le matin'],
-  ['Guten Tag!','bonjour poli'],
-  ['Tschüss!','au revoir'],
-  ['Ich heiße ...','je m’appelle ...'],
-  ['Wie heißt du?','comment t’appelles-tu ?'],
-  ['Wie geht es dir?','comment vas-tu ?'],
-  ['Gut, danke.','bien, merci']
- ];
- main.innerHTML=`<div class="hero"><div class="small">Woche 1 · Tag 1 · A1</div><h2>Dein erster Kontakt mit Deutsch</h2><div class="meta"><span class="pill">🌱 Absoluter Anfänger</span><span class="pill">🎯 Begrüßen + Name sagen</span></div></div>
- <div class="section beginnerIntro"><div class="beginnerGoal"><h3>🎯 Dein Ziel heute</h3><p>Am Ende dieser ersten Lektion kannst du <b>Hallo sagen</b>, deinen <b>Namen nennen</b>, jemanden nach dem Namen fragen und dich verabschieden. Mehr brauchst du heute noch nicht.</p></div>
- <div class="box"><h3>1 · 👂 Erst hören, dann sprechen</h3><p class="small">Drücke auf 🔊. Höre zuerst nur zu. Danach sprich den Ausdruck zweimal laut nach.</p>
- ${beginnerPhrases.map(p=>`<div class="phraseCard"><div class="phraseBig">${p[0]} ${sentenceHelpButton(p[0],p[1])}</div><div class="phraseActions"><button type="button" class="btn secondary speakText" data-text="${p[0]}">🔊 Hören</button></div></div>`).join('')}
- </div>
- <div class="box"><h3>2 · 💬 Ein Mini-Dialog</h3><div class="miniDialogue">
- <p><b>A:</b> Hallo! ${sentenceHelpButton('Hallo!')}</p>
- <p><b>B:</b> Hallo!</p>
- <p><b>A:</b> Ich heiße Anna. ${sentenceHelpButton('Ich heiße ...')}</p>
- <p><b>A:</b> Wie heißt du? ${sentenceHelpButton('Wie heißt du?')}</p>
- <p><b>B:</b> Ich heiße Mounir.</p>
- <p><b>A:</b> Tschüss! ${sentenceHelpButton('Tschüss!')}</p>
- <p><b>B:</b> Tschüss!</p></div>
- <div class="actions"><button type="button" class="btn primary" id="dialogPlay">▶ Dialog hören</button></div></div>
- <div class="box"><h3>3 · 🧠 Nur eine Mini-Regel</h3><p>Für deinen Namen merkst du dir nur diesen Baustein:</p><div class="rule"><b>Ich heiße + Name.</b></div><p>Beispiel: <b>Ich heiße Mounir.</b></p><p class="small">Heute musst du noch nicht verstehen, warum <i>heiße</i> so geschrieben wird. Benutze den ganzen Satz zuerst wie einen fertigen Baustein.</p></div>
- <div class="box"><h3>4 · ✅ Erkennen</h3><p>Was bedeutet <b>„Tschüss!“</b>?</p><div class="beginnerCheck"><label><input type="radio" name="a1check" value="0"> Guten Morgen</label><label><input type="radio" name="a1check" value="1"> Au revoir</label><label><input type="radio" name="a1check" value="2"> Merci</label></div><div class="actions"><button class="btn primary" id="a1checkBtn">Antwort prüfen</button></div><div id="a1checkFb" class="small"></div></div>
- <div class="box"><h3>5 · 🎙 Jetzt du</h3><p>Sag laut: <b>Hallo! Ich heiße Mounir. Wie heißt du?</b></p><div class="actions"><button class="btn primary" id="a1courseDone">Ich habe es laut gesagt</button></div></div>
- </div>`;
- document.querySelectorAll('.speakText').forEach(b=>b.onclick=()=>say(b.dataset.text,.78));
- document.querySelectorAll('.sentenceHelp').forEach(b=>b.onclick=()=>{let h=b.nextElementSibling;if(!h||!h.classList?.contains('helpText')){h=document.createElement('div');h.className='helpText';b.parentElement.insertBefore(h,b.nextSibling)}h.textContent=b.dataset.help;h.dir=helperLang()==='ar'?'rtl':'ltr';h.classList.toggle('show')});
- dialogPlay.onclick=()=>say('Hallo! Ich heiße Anna. Wie heißt du? Ich heiße Mounir. Tschüss!',.72);
- a1checkBtn.onclick=()=>{let x=document.querySelector('input[name=a1check]:checked');if(!x)return a1checkFb.textContent=ht('choose');a1checkFb.textContent=(x.value==='1'?'✓ Richtig! Tschüss = au revoir.':'Noch nicht. Höre „Tschüss“ noch einmal.')};
- a1courseDone.onclick=()=>{s.course=true;s.read=true;s.listen=true;s.speak=true;st.speech[i]='Hallo! Ich heiße Mounir. Wie heißt du?';save();st.done[i]=true;st.scores[i]=100;save();side();render()};
- return;
+
+const a1Curriculum=[
+{
+ title:'Dein erster Kontakt mit Deutsch',goal:'Begrüßen, deinen Namen sagen und dich verabschieden.',
+ phrases:[
+  ['Hallo!','Bonjour !','Hello!','مرحبًا!'],
+  ['Guten Morgen!','Bonjour ! (le matin)','Good morning!','صباح الخير!'],
+  ['Guten Tag!','Bonjour !','Hello / Good day!','مرحبًا!'],
+  ['Tschüss!','Au revoir !','Bye!','إلى اللقاء!'],
+  ['Ich heiße ...','Je m’appelle ...','My name is ...','اسمي ...'],
+  ['Wie heißt du?','Comment t’appelles-tu ?','What is your name?','ما اسمك؟']
+ ],
+ dialogue:['Hallo!','Hallo!','Ich heiße Anna. Wie heißt du?','Ich heiße Omar.','Tschüss!','Tschüss!'],
+ rule:'Heute lernst du ganze Ausdrücke. Du musst noch keine Grammatikregel auswendig lernen.',
+ task:'Sage laut: Hallo! Ich heiße ... Wie heißt du?',
+ read:'Hallo! Ich heiße Mia.',
+ readQ:['Wie heißt die Person?','Mia.','Hallo.','Deutsch.'],
+ listen:'Guten Tag! Ich heiße Paul.',
+ listenQ:['Wie heißt die Person?','Paul.','Tag.','Morgen.'],
+ quiz:[
+  ['Was bedeutet „Hallo“?','Bonjour / Hello','Merci','Au revoir'],
+  ['Was bedeutet „Tschüss“?','Au revoir / Bye','Bonjour','S’il vous plaît'],
+  ['Wie sagst du deinen Namen?','Ich heiße ...','Wie heißt du?','Guten Morgen'],
+  ['Was bedeutet „Wie heißt du?“','Comment t’appelles-tu ?','Où habites-tu ?','Comment vas-tu ?'],
+  ['Welche Begrüßung passt am Morgen?','Guten Morgen!','Tschüss!','Gute Nacht!'],
+  ['Welche Antwort passt zu „Wie heißt du?“','Ich heiße Sara.','Guten Morgen.','Tschüss.'],
+  ['Welche Form ist eine Begrüßung?','Guten Tag!','Ich heiße.','Wie?'],
+  ['Was hörst du zuerst?','Hallo!','Tschüss!','Danke!'],
+  ['Welcher Satz ist vollständig?','Ich heiße Omar.','Ich Omar.','Heiße Omar ich.'],
+  ['Was ist das Ziel dieser Lektion?','Begrüßen und den Namen sagen','Über die Vergangenheit sprechen','Eine Bewerbung schreiben']
+ ]
+},
+{
+ title:'Sich vorstellen',goal:'Name, Herkunft und Sprache sagen.',
+ phrases:[
+  ['Ich heiße ...','Je m’appelle ...','My name is ...','اسمي ...'],
+  ['Ich komme aus ...','Je viens de ...','I come from ...','أنا من ...'],
+  ['Ich wohne in ...','J’habite à ...','I live in ...','أسكن في ...'],
+  ['Ich spreche ...','Je parle ...','I speak ...','أتحدث ...'],
+  ['Woher kommst du?','D’où viens-tu ?','Where are you from?','من أين أنت؟'],
+  ['Welche Sprachen sprichst du?','Quelles langues parles-tu ?','Which languages do you speak?','ما اللغات التي تتحدثها؟']
+ ],
+ dialogue:['Hallo! Ich heiße Lina.','Ich heiße Karim.','Woher kommst du?','Ich komme aus Marokko.','Welche Sprachen sprichst du?','Ich spreche Arabisch und Französisch.'],
+ rule:'Merke dir drei Bausteine: Ich heiße … / Ich komme aus … / Ich spreche …',
+ task:'Stelle dich in vier kurzen Sätzen vor.',
+ read:'Ich heiße Samir. Ich komme aus Marokko. Ich spreche Arabisch und Französisch.',
+ readQ:['Woher kommt Samir?','Aus Marokko.','Aus Deutschland.','Aus Frankreich.'],
+ listen:'Ich heiße Lea. Ich komme aus Deutschland und spreche Deutsch.',
+ listenQ:['Welche Sprache spricht Lea?','Deutsch.','Arabisch.','Französisch.'],
+ quiz:[
+  ['Was bedeutet „Ich komme aus Marokko“?','Je viens du Maroc','J’habite au Maroc','Je parle marocain'],
+  ['Wie sagst du „Je parle français“?','Ich spreche Französisch.','Ich komme Französisch.','Ich heiße Französisch.'],
+  ['Welche Frage fragt nach dem Herkunftsland?','Woher kommst du?','Wie heißt du?','Wie geht es dir?'],
+  ['Welche Antwort passt? „Woher kommst du?“','Ich komme aus Marokko.','Ich heiße Omar.','Ich bin gut.'],
+  ['Was bedeutet „Ich wohne in Köln“?','J’habite à Cologne','Je viens de Cologne','Je travaille à Cologne'],
+  ['Welcher Satz nennt eine Sprache?','Ich spreche Deutsch.','Ich komme aus Deutschland.','Ich wohne in Berlin.'],
+  ['Welche Form ist korrekt?','Ich komme aus Marokko.','Ich aus Marokko komme.','Aus Marokko ich komme.'],
+  ['Wie sagst du deinen Namen?','Ich heiße ...','Ich spreche ...','Ich komme ...'],
+  ['Welche Frage passt zu „Ich spreche Arabisch“?','Welche Sprachen sprichst du?','Wo wohnst du?','Wie alt bist du?'],
+  ['Was ist das Ziel?','Sich kurz vorstellen','Eine Reise buchen','Vergangenheit erzählen']
+ ]
+},
+{
+ title:'sein und haben',goal:'Sehr einfache Aussagen über dich machen.',
+ phrases:[
+  ['Ich bin ...','Je suis ...','I am ...','أنا ...'],
+  ['Du bist ...','Tu es ...','You are ...','أنت ...'],
+  ['Ich habe ...','J’ai ...','I have ...','لدي ...'],
+  ['Du hast ...','Tu as ...','You have ...','لديك ...'],
+  ['Ich bin müde.','Je suis fatigué.','I am tired.','أنا متعب.'],
+  ['Ich habe Zeit.','J’ai du temps.','I have time.','لدي وقت.']
+ ],
+ dialogue:['Wie geht es dir?','Gut, danke.','Bist du müde?','Ja, ich bin müde.','Hast du Zeit?','Ja, ich habe Zeit.'],
+ rule:'Merke zuerst nur: ich bin / du bist und ich habe / du hast.',
+ task:'Bilde vier Sätze mit „Ich bin“ und „Ich habe“.',
+ read:'Ich bin 30 Jahre alt. Ich habe zwei Kinder.',
+ readQ:['Wie viele Kinder hat die Person?','Zwei.','Drei.','Keine.'],
+ listen:'Ich bin müde, aber ich habe heute Zeit.',
+ listenQ:['Was hat die Person heute?','Zeit.','Urlaub.','Ein Auto.'],
+ quiz:[
+  ['Wie heißt die richtige Form?','Ich bin müde.','Ich bist müde.','Ich sein müde.'],
+  ['Wie heißt die richtige Form?','Du bist hier.','Du bin hier.','Du sein hier.'],
+  ['Wie sagst du „J’ai du temps“?','Ich habe Zeit.','Ich bin Zeit.','Ich hast Zeit.'],
+  ['Welche Form passt zu du?','du hast','du habe','du hat'],
+  ['Was bedeutet „Ich bin müde“?','Je suis fatigué','J’ai sommeil demain','Je travaille'],
+  ['Was bedeutet „Ich habe Zeit“?','J’ai du temps','Je suis à l’heure','Je viens tôt'],
+  ['Welche Antwort passt zu „Bist du müde?“','Ja, ich bin müde.','Ich habe müde.','Ja, du bist.'],
+  ['Welche Form ist korrekt?','Ich habe zwei Kinder.','Ich hat zwei Kinder.','Ich bin zwei Kinder.'],
+  ['Was ist „sein“?','être / to be','avoir / to have','venir / to come'],
+  ['Was ist das Ziel?','Einfache Aussagen mit sein und haben','Artikel lernen','Vergangenheit erzählen']
+ ]
+},
+{
+ title:'Zahlen und Uhrzeit',goal:'Alter, einfache Zahlen und Uhrzeiten verstehen.',
+ phrases:[
+  ['eins','un','one','واحد'],['zwei','deux','two','اثنان'],['drei','trois','three','ثلاثة'],['zehn','dix','ten','عشرة'],
+  ['Ich bin 40 Jahre alt.','J’ai 40 ans.','I am 40 years old.','عمري 40 سنة.'],
+  ['Es ist zehn Uhr.','Il est dix heures.','It is ten o’clock.','الساعة العاشرة.']
+ ],
+ dialogue:['Wie alt bist du?','Ich bin 40 Jahre alt.','Wie spät ist es?','Es ist zehn Uhr.'],
+ rule:'Alter: Ich bin … Jahre alt. Uhrzeit: Es ist … Uhr.',
+ task:'Sage dein Alter und drei einfache Uhrzeiten.',
+ read:'Mein Termin ist um zehn Uhr. Ich bin vierzig Jahre alt.',
+ readQ:['Wann ist der Termin?','Um zehn Uhr.','Um acht Uhr.','Um zwölf Uhr.'],
+ listen:'Der Kurs beginnt um neun Uhr.',
+ listenQ:['Wann beginnt der Kurs?','Um neun Uhr.','Um sieben Uhr.','Um elf Uhr.'],
+ quiz:[
+  ['Was bedeutet „zwei“?','2','3','10'],['Was bedeutet „zehn“?','10','1','20'],
+  ['Wie sagst du „J’ai 40 ans“?','Ich bin 40 Jahre alt.','Ich habe 40 Jahre.','Ich bin 40 Uhr.'],
+  ['Wie sagst du 10 Uhr?','zehn Uhr','zehn Jahre','zehn Zeit'],
+  ['Welche Frage fragt nach dem Alter?','Wie alt bist du?','Wie heißt du?','Wo wohnst du?'],
+  ['Welche Frage fragt nach der Uhrzeit?','Wie spät ist es?','Wie alt ist es?','Wo ist Zeit?'],
+  ['Was bedeutet „Es ist neun Uhr“?','Il est neuf heures','J’ai neuf ans','Neuf personnes'],
+  ['Welche Form ist korrekt?','Ich bin 30 Jahre alt.','Ich habe 30 Jahre alt.','Ich bin 30 Uhr.'],
+  ['Was bedeutet „um zehn Uhr“?','à dix heures','dix ans','dix jours'],
+  ['Was ist das Ziel?','Zahlen, Alter und Uhrzeit','Relativsätze','Perfekt']
+ ]
+},
+{
+ title:'Einfache Fragen',goal:'Mit wer, was, wo und wie einfache Fragen stellen.',
+ phrases:[
+  ['Wer?','Qui ?','Who?','من؟'],['Was?','Quoi ?','What?','ماذا؟'],['Wo?','Où ?','Where?','أين؟'],['Wie?','Comment ?','How?','كيف؟'],
+  ['Wo wohnst du?','Où habites-tu ?','Where do you live?','أين تسكن؟'],
+  ['Wie heißt du?','Comment t’appelles-tu ?','What is your name?','ما اسمك؟']
+ ],
+ dialogue:['Wie heißt du?','Ich heiße Nina.','Wo wohnst du?','Ich wohne in Köln.','Was machst du?','Ich lerne Deutsch.'],
+ rule:'W-Frage: Fragewort + Verb + Person. Beispiel: Wo wohnst du?',
+ task:'Stelle fünf einfache Fragen.',
+ read:'Wo wohnst du? Ich wohne in Köln. Wie heißt du? Ich heiße Nina.',
+ readQ:['Wo wohnt Nina?','In Köln.','In Berlin.','In Bonn.'],
+ listen:'Was machst du? Ich lerne Deutsch.',
+ listenQ:['Was macht die Person?','Sie lernt Deutsch.','Sie arbeitet.','Sie fährt.'],
+ quiz:[
+  ['Was bedeutet „wer“?','qui / who','où / where','quoi / what'],
+  ['Was bedeutet „wo“?','où / where','comment / how','qui / who'],
+  ['Welche Frage ist korrekt?','Wo wohnst du?','Wo du wohnst?','Du wo wohnst?'],
+  ['Welche Frage fragt nach dem Namen?','Wie heißt du?','Wo wohnst du?','Was machst du?'],
+  ['Welche Frage fragt nach einer Person?','Wer ist das?','Wo ist das?','Wie ist das?'],
+  ['Was bedeutet „Was machst du?“','Que fais-tu ?','Où habites-tu ?','Quel âge as-tu ?'],
+  ['Welche Antwort passt zu „Wo wohnst du?“','Ich wohne in Köln.','Ich heiße Köln.','Ich bin 30.'],
+  ['Welche Antwort passt zu „Wie heißt du?“','Ich heiße Sara.','Ich wohne in Sara.','Ich spreche Sara.'],
+  ['Welche Reihenfolge ist richtig?','Wo + wohnst + du?','Wo + du + wohnst?','Wohnst + wo + du?'],
+  ['Was ist das Ziel?','Einfache Fragen stellen','Perfekt bilden','Artikel deklinieren']
+ ]
+},
+{
+ title:'Artikel und Nomen',goal:'Nomen mit der, die oder das lernen.',
+ phrases:[
+  ['der Tisch','la table (masc. grammatical)','the table','الطاولة (مذكر نحويًا)'],
+  ['die Lampe','la lampe','the lamp','المصباح / اللمبة'],
+  ['das Buch','le livre','the book','الكتاب'],
+  ['ein Tisch','une table','a table','طاولة'],
+  ['eine Lampe','une lampe','a lamp','مصباح'],
+  ['ein Buch','un livre','a book','كتاب']
+ ],
+ dialogue:['Was ist das?','Das ist ein Tisch.','Und das?','Das ist eine Lampe.'],
+ rule:'Lerne ein Nomen immer zusammen mit seinem Artikel: der Tisch, die Lampe, das Buch.',
+ task:'Nenne sechs Dinge mit ihrem Artikel.',
+ read:'Das ist ein Tisch. Der Tisch ist neu. Das ist eine Lampe. Die Lampe ist klein.',
+ readQ:['Was ist klein?','Die Lampe.','Der Tisch.','Das Buch.'],
+ listen:'Das ist ein Buch. Das Buch ist interessant.',
+ listenQ:['Was ist interessant?','Das Buch.','Die Lampe.','Der Tisch.'],
+ quiz:[
+  ['Welcher Artikel gehört zu Tisch?','der','die','das'],
+  ['Welcher Artikel gehört zu Lampe?','die','der','das'],
+  ['Welcher Artikel gehört zu Buch?','das','die','der'],
+  ['Welche Form passt?','ein Tisch','eine Tisch','einen Tisch'],
+  ['Welche Form passt?','eine Lampe','ein Lampe','einen Lampe'],
+  ['Welche Form passt?','ein Buch','eine Buch','einen Buch'],
+  ['Was bedeutet „Das ist ein Buch“?','C’est un livre','C’est une table','C’est une lampe'],
+  ['Wie lernst du ein neues Nomen am besten?','Mit seinem Artikel','Ohne Artikel','Nur als Übersetzung'],
+  ['Welche Gruppe ist korrekt?','der Tisch – die Lampe – das Buch','die Tisch – das Lampe – der Buch','das Tisch – der Lampe – die Buch'],
+  ['Was ist das Ziel?','Artikel mit Nomen lernen','Vergangenheit erzählen','Modalverben lernen']
+ ]
+},
+{
+ title:'Checkpoint A1',goal:'Die ersten Grundlagen zusammen benutzen.',
+ phrases:[
+  ['Hallo! Ich heiße ...','Bonjour ! Je m’appelle ...','Hello! My name is ...','مرحبًا! اسمي ...'],
+  ['Ich komme aus ...','Je viens de ...','I come from ...','أنا من ...'],
+  ['Ich spreche ...','Je parle ...','I speak ...','أتحدث ...'],
+  ['Ich bin ... Jahre alt.','J’ai ... ans.','I am ... years old.','عمري ... سنة.'],
+  ['Wo wohnst du?','Où habites-tu ?','Where do you live?','أين تسكن؟'],
+  ['Das ist ein Buch.','C’est un livre.','This is a book.','هذا كتاب.']
+ ],
+ dialogue:['Hallo! Wie heißt du?','Ich heiße Omar.','Woher kommst du?','Ich komme aus Marokko.','Welche Sprachen sprichst du?','Ich spreche Arabisch und Französisch.'],
+ rule:'Benutze kurze, sichere Sätze. Du musst noch nicht schnell sprechen.',
+ task:'Stelle dich 1–2 Minuten vor und beantworte drei einfache Fragen.',
+ read:'Ich heiße Mia, komme aus Spanien und wohne in Hamburg. Ich bin 25 Jahre alt und lerne Deutsch.',
+ readQ:['Wo wohnt Mia?','In Hamburg.','In Spanien.','In München.'],
+ listen:'Hallo! Ich heiße Omar. Ich bin 28 Jahre alt und spreche Arabisch und ein bisschen Deutsch.',
+ listenQ:['Wie alt ist Omar?','28 Jahre.','25 Jahre.','30 Jahre.'],
+ quiz:[
+  ['Wie begrüßt du jemanden?','Hallo!','Tschüss!','Danke!'],
+  ['Wie sagst du deinen Namen?','Ich heiße ...','Ich wohne ...','Ich spreche ...'],
+  ['Wie sagst du dein Herkunftsland?','Ich komme aus ...','Ich bin aus Uhr.','Ich heiße Land.'],
+  ['Welche Form ist korrekt?','Ich bin 30 Jahre alt.','Ich habe 30 Jahre.','Ich bin 30 Uhr.'],
+  ['Welche Frage fragt nach dem Wohnort?','Wo wohnst du?','Wie heißt du?','Wer bist alt?'],
+  ['Welcher Artikel gehört zu Buch?','das','der','die'],
+  ['Welche Form ist korrekt?','Ich habe Zeit.','Ich bin Zeit.','Ich hast Zeit.'],
+  ['Was bedeutet „Tschüss“?','Au revoir','Bonjour','Merci'],
+  ['Welche Antwort passt zu „Woher kommst du?“','Ich komme aus Marokko.','Ich heiße Marokko.','Ich wohne Sprache.'],
+  ['Was kannst du nach A1-Anfang schon tun?','Dich einfach vorstellen und Fragen beantworten','Komplex argumentieren','Einen Fachartikel schreiben']
+ ]
 }
+];
+
+function a1Help(row){
+ const l=helperLang();
+ return l==='fr'?row[1]:l==='en'?row[2]:row[3];
+}
+function a1PhraseCard(row){
+ return `<div class="phraseCard"><div class="phraseBig">${row[0]} ${directHelpButton(a1Help(row))}</div><div class="phraseActions"><button type="button" class="btn secondary speakText" data-text="${row[0].replace(/"/g,'&quot;')}">🔊 Hören</button></div></div>`;
+}
+function a1QuizFor(i){
+ return a1Curriculum[i].quiz.map(q=>({q:q[0],opts:q.slice(1),ans:0}));
+}
+function renderA1(i,s){
+ const L=a1Curriculum[i],q=a1QuizFor(i),speech=st.speech[i]||'';
+ main.innerHTML=`<div class="hero"><div class="small">Woche 1 · Tag ${i+1} · A1</div><h2>${L.title}</h2><div class="meta"><span class="pill">🌱 A1 · Anfänger</span><span class="pill">🎯 ${L.goal}</span><span class="pill">✅ Test ≥ 90 %</span></div></div>
+ <div class="steps"><div class="step ${s.course?'ok':''}">1 · 📘 Entdecken</div><div class="step ${s.read?'ok':''}">2 · 📖 Lesen</div><div class="step ${s.listen?'ok':''}">3 · 🎧 Hören</div><div class="step ${s.speak?'ok':''}">4 · 🎙 Sprechen</div><div class="step ${st.done[i]?'ok':''}">5 · 📝 Test</div></div>
+ <div class="section"><div class="beginnerGoal"><h3>🎯 Dein Ziel heute</h3><p>${L.goal} ${directHelpButton(helperLang()==='fr'?'Objectif pratique de cette leçon.':helperLang()==='ar'?'الهدف العملي لهذا الدرس.':'Practical goal of this lesson.')}</p></div></div>
+ <div class="section"><div class="box"><h3>1 · 👂 Hören und nachsprechen</h3><p class="small">Höre jeden Ausdruck und sprich ihn zweimal laut nach. ${directHelpButton(helperLang()==='fr'?'Écoute chaque expression et répète-la deux fois à voix haute.':helperLang()==='ar'?'استمع إلى كل عبارة وكررها مرتين بصوت مرتفع.':'Listen to each expression and repeat it aloud twice.')}</p>${L.phrases.map(a1PhraseCard).join('')}<div class="actions"><button class="btn primary" id="a1CourseDone">Diesen Teil abschließen</button></div></div></div>
+ <div class="section"><div class="box"><h3>2 · 💬 Mini-Dialog</h3><div class="miniDialogue">${L.dialogue.map((x,n)=>`<p><b>${n%2===0?'A':'B'}:</b> ${x} ${sentenceHelpButton(x,'')}</p>`).join('')}</div><div class="actions"><button class="btn secondary" id="a1DialogPlay">▶ Dialog hören</button></div></div></div>
+ <div class="section"><div class="box"><h3>3 · 🧩 Mini-Regel</h3><div class="rule">${L.rule} ${directHelpButton(helperLang()==='fr'?'Règle simplifiée pour débutant.':helperLang()==='ar'?'قاعدة مبسطة للمبتدئ.':'Simplified beginner rule.')}</div></div></div>
+ <div class="section"><h3>📖 Lesen</h3><div class="box"><div class="transcript">${L.read} ${sentenceHelpButton(L.read,'')}</div><div class="q"><b>${L.readQ[0]}</b>${L.readQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1read" value="${j}"> ${o}</label>`).join('')}</div><button class="btn primary" id="a1ReadBtn">Lesen prüfen</button><div id="a1ReadFb" class="small"></div></div></div>
+ <div class="section"><h3>🎧 Hören</h3><div class="box"><div class="actions"><button class="btn primary" id="a1ListenPlay">▶ Anhören</button><button class="btn secondary" id="a1ListenSlow">🐢 Langsam</button></div><div class="q"><b>${L.listenQ[0]}</b>${L.listenQ.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="a1listen" value="${j}"> ${o}</label>`).join('')}</div><button class="btn primary" id="a1ListenBtn">Hören prüfen</button><div id="a1ListenFb" class="small"></div></div></div>
+ <div class="section"><h3>🎙 Sprechen</h3><div class="box"><div class="mission"><b>Aufgabe:</b> ${L.task} ${directHelpButton(helperLang()==='fr'?'Fais cette petite production orale à voix haute.':helperLang()==='ar'?'أنجز هذا التمرين الشفهي بصوت مرتفع.':'Do this short speaking task aloud.')}</div><textarea id="a1SpeechText" placeholder="Schreibe hier, was du gesagt hast ...">${speech}</textarea><div class="actions"><button class="btn primary" id="a1SpeakBtn">Sprechen bestätigen</button></div><div id="a1SpeakFb" class="small"></div></div></div>
+ <div class="section ${s.course&&s.read&&s.listen&&s.speak?'':'hidden'}" id="a1Test"><h3>📝 Abschlusstest</h3><p class="small">10 Fragen · 9/10 minimum.</p><form id="a1Form">${q.map((qq,n)=>`<div class="q"><b>${n+1}. ${qq.q}</b>${qq.opts.map((o,j)=>`<label class="opt"><input type="radio" name="a1q${n}" value="${j}"> ${o}</label>`).join('')}</div>`).join('')}<button class="btn primary">Auswerten</button></form><div id="a1Res"></div></div>`;
+
+ document.querySelectorAll('.speakText').forEach(b=>b.onclick=()=>say(b.dataset.text,.75));
+ document.querySelectorAll('.sentenceHelp').forEach(b=>b.onclick=()=>{let h=b.nextElementSibling;if(!h||!h.classList?.contains('helpText')){h=document.createElement('div');h.className='helpText';b.parentElement.insertBefore(h,b.nextSibling)}h.textContent=b.dataset.help;h.dir=helperLang()==='ar'?'rtl':'ltr';h.classList.toggle('show')});
+ a1CourseDone.onclick=()=>{s.course=true;save();render()};
+ a1DialogPlay.onclick=()=>say(L.dialogue.join(' '),.72);
+ a1ReadBtn.onclick=()=>{let x=document.querySelector('input[name=a1read]:checked');if(!x)return a1ReadFb.textContent=ht('choose');if(+x.value===0){s.read=true;a1ReadFb.textContent=ht('correctRead');save();render()}else a1ReadFb.textContent=ht('wrongRead')};
+ a1ListenPlay.onclick=()=>say(L.listen,.78);a1ListenSlow.onclick=()=>say(L.listen,.62);
+ a1ListenBtn.onclick=()=>{let x=document.querySelector('input[name=a1listen]:checked');if(!x)return a1ListenFb.textContent=ht('chooseListen');if(+x.value===0){s.listen=true;a1ListenFb.textContent=ht('correctListen');save();render()}else a1ListenFb.textContent=ht('wrongListen')};
+ a1SpeakBtn.onclick=()=>{let t=a1SpeechText.value.trim();if(t.length<5)return a1SpeakFb.textContent=helperLang()==='ar'?'اكتب على الأقل الجملة التي قلتها بصوت مرتفع.':helperLang()==='en'?'Write at least the sentence you said aloud.':'Écris au moins la phrase que tu as dite à voix haute.';st.speech[i]=t;s.speak=true;save();render()};
+ a1Form?.addEventListener('submit',e=>{e.preventDefault();let ok=0;q.forEach((qq,n)=>{let x=document.querySelector(`input[name=a1q${n}]:checked`);if(x&&+x.value===qq.ans)ok++});let score=ok*10;st.scores[i]=Math.max(st.scores[i]||0,score);if(score>=90){st.done[i]=true;save();a1Res.className='result good';a1Res.innerHTML=`<b>${score}% ✓</b><br>${ht('next')}`;side()}else{a1Res.className='result bad';a1Res.innerHTML=`<b>${score}%</b><br>${ht('need90')}`;save()}});
+}
+function render(){side();let i=st.cur;if(!openDay(i)){main.innerHTML=`<h2>🔒 ${ht('locked')}</h2>`;return}let d=lesson(i),cd=detailFor(i,d),gde=courseGerman(i,d),s=step(i),mat=materials[i],lvl=levelForDay(i),profile=cefr[lvl],aud=audioText(i,d),qs=quiz(i,d),speech=st.speech[i]||'';
+if(i<7){renderA1(i,s);return;}
+
 main.innerHTML=`<div class="hero"><div class="small">Woche ${Math.floor(i/7)+1} · Tag ${i+1}</div><h2>${topics[i][0]} ${directHelpButton(topicHelp(i,0))}</h2><div class="meta"><span class="pill">📊 ${profile.label} ${directHelpButton(cefrHelp(lvl,'label'))}</span><span class="pill">🎯 ${topics[i][1]} ${directHelpButton(topicHelp(i,1))}</span><span class="pill">✅ test ≥ 90 %</span>${st.done[i]?'<span class="pill">🏆 Bereits abgeschlossen</span>':''}</div></div>
 <div class="section"><div class="box"><h3>🧭 GER-Niveau — ${profile.label} ${sentenceHelpButton(profile.label,cefrHelp(lvl,'label'))}</h3><p><b>Auf diesem Niveau:</b> ${profile.can} ${directHelpButton(cefrHelp(lvl,'can'))}</p><div class="two"><div><b>Lesen</b><p class="small">${profile.read} ${directHelpButton(cefrHelp(lvl,'read'))}</p></div><div><b>Hören</b><p class="small">${profile.hear} ${directHelpButton(cefrHelp(lvl,'hear'))}</p></div></div><p class="small"><b>Sprechen:</b> ${profile.speak} ${directHelpButton(cefrHelp(lvl,'speak'))}</p></div></div>
 <div class="steps"><div class="step" id="s-course">1 · 📘 Lektion</div><div class="step" id="s-read">2 · 📖 Lesen</div><div class="step" id="s-listen">3 · 🎧 Hören</div><div class="step" id="s-speak">4 · 🎙 Sprechen</div><div class="step" id="s-test">5 · 📝 Test</div></div>
