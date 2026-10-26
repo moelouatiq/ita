@@ -343,6 +343,73 @@ const helperLabels={fr:'❓ FR',ar:'❓ AR',en:'❓ EN'};const uiText={
  }
 };
 function ht(k){return uiText[helperLang()]?.[k]||uiText.fr[k]||k}
+const genericSentenceTranslations={
+ 'In dieser Lektion lernst du eine Struktur, die du in echten Alltagssituationen aktiv benutzen kannst.':{
+   fr:'Dans cette leçon, tu apprends une structure que tu peux utiliser activement dans des situations réelles.',
+   en:'In this lesson, you learn a structure that you can actively use in real-life situations.',
+   ar:'في هذا الدرس ستتعلم بنية يمكنك استخدامها فعليًا في مواقف الحياة اليومية.'
+ },
+ 'Beobachte die Struktur in den Beispielen und achte besonders auf die Stellung des konjugierten Verbs.':{
+   fr:'Observe la structure dans les exemples et fais particulièrement attention à la position du verbe conjugué.',
+   en:'Observe the structure in the examples and pay particular attention to the position of the conjugated verb.',
+   ar:'لاحظ البنية في الأمثلة وانتبه بشكل خاص إلى موقع الفعل المصرف.'
+ },
+ 'Lies die Beispiele langsam.':{
+   fr:'Lis les exemples lentement.',
+   en:'Read the examples slowly.',
+   ar:'اقرأ الأمثلة ببطء.'
+ },
+ 'Markiere die wichtige Struktur.':{
+   fr:'Repère ou souligne la structure importante.',
+   en:'Identify or highlight the important structure.',
+   ar:'حدّد أو ضع علامة على البنية المهمة.'
+ },
+ 'Bilde danach eigene Sätze mit demselben Muster.':{
+   fr:'Forme ensuite tes propres phrases en utilisant le même modèle.',
+   en:'Then create your own sentences using the same pattern.',
+   ar:'بعد ذلك كوّن جملاً من إنشائك باستعمال النمط نفسه.'
+ },
+ 'Verstehe zuerst das Muster und lerne danach die Beispiele. So kannst du die Regel leichter selbst anwenden.':{
+   fr:'Comprends d’abord le modèle, puis apprends les exemples. Ainsi, tu pourras appliquer la règle toi-même plus facilement.',
+   en:'First understand the pattern, then learn the examples. This makes it easier to apply the rule yourself.',
+   ar:'افهم النمط أولاً ثم تعلّم الأمثلة. بهذه الطريقة يصبح تطبيق القاعدة بنفسك أسهل.'
+ },
+ 'Achte auf die Wortstellung und vergleiche deinen Satz mit den Beispielen.':{
+   fr:'Fais attention à l’ordre des mots et compare ta phrase avec les exemples.',
+   en:'Pay attention to word order and compare your sentence with the examples.',
+   ar:'انتبه إلى ترتيب الكلمات وقارن جملتك بالأمثلة.'
+ },
+ 'Du kannst die Regel mit eigenen Worten erklären.':{
+   fr:'Tu peux expliquer la règle avec tes propres mots.',
+   en:'You can explain the rule in your own words.',
+   ar:'يمكنك شرح القاعدة بكلماتك الخاصة.'
+ },
+ 'Du kannst einen falschen Satz erkennen und korrigieren.':{
+   fr:'Tu peux reconnaître une phrase incorrecte et la corriger.',
+   en:'You can identify an incorrect sentence and correct it.',
+   ar:'يمكنك التعرّف على جملة خاطئة وتصحيحها.'
+ },
+ 'Du kannst drei eigene Sätze bilden, ohne die Beispiele zu kopieren.':{
+   fr:'Tu peux former trois phrases personnelles sans copier les exemples.',
+   en:'You can create three of your own sentences without copying the examples.',
+   ar:'يمكنك تكوين ثلاث جمل من إنشائك دون نسخ الأمثلة.'
+ },
+ 'Du kannst die Struktur beim Sprechen benutzen.':{
+   fr:'Tu peux utiliser la structure lorsque tu parles.',
+   en:'You can use the structure when speaking.',
+   ar:'يمكنك استخدام البنية أثناء التحدث.'
+ },
+ 'Klicke auf 🔊, höre genau zu und wiederhole das Wort laut.':{
+   fr:'Clique sur 🔊, écoute attentivement et répète le mot à voix haute.',
+   en:'Click 🔊, listen carefully and repeat the word aloud.',
+   ar:'اضغط على 🔊 واستمع جيدًا ثم كرر الكلمة بصوت مرتفع.'
+ },
+ 'Schreibe drei eigene Sätze mit der Regel dieser Lektion.':{
+   fr:'Écris trois phrases de ton choix en utilisant la règle de cette leçon.',
+   en:'Write three of your own sentences using the rule from this lesson.',
+   ar:'اكتب ثلاث جمل من إنشائك مستخدمًا قاعدة هذا الدرس.'
+ }
+};
 const sentenceHelpMaps={
  fr:{
   'Im deutschen Hauptsatz steht das konjugierte Verb normalerweise an zweiter Position.':'Dans la proposition principale allemande, le verbe conjugué se trouve normalement en deuxième position.',
@@ -374,10 +441,14 @@ const sentenceHelpMaps={
 };
 function sentenceHelpText(de,frFallback=''){
  const l=helperLang();
- if(l==='fr') return sentenceHelpMaps.fr[de]||frFallback||'Traduction non disponible.';
- if(l==='en') return sentenceHelpMaps.en[de]||frFallback||'Translation not available yet.';
- if(l==='ar') return sentenceHelpMaps.ar[de]||frFallback||'الترجمة غير متوفرة بعد.';
- return frFallback;
+ const exact=genericSentenceTranslations[de]?.[l];
+ if(exact)return exact;
+ const mapped=sentenceHelpMaps[l]?.[de];
+ if(mapped)return mapped;
+ if(l==='fr'&&frFallback)return frFallback;
+ if(l==='en')return 'Translation not available yet.';
+ if(l==='ar')return 'الترجمة غير متوفرة بعد.';
+ return frFallback||'Traduction non disponible.';
 }
 function sentenceHelpButton(de,frFallback=''){
  const help=sentenceHelpText(de,frFallback);
@@ -475,7 +546,7 @@ function upd(i){let s=step(i);['course','read','listen','speak'].forEach(k=>docu
 function render(){side();let i=st.cur;if(!openDay(i)){main.innerHTML=`<h2>🔒 ${ht('locked')}</h2>`;return}let d=lesson(i),cd=detailFor(i,d),gde=courseGerman(i,d),s=step(i),mat=materials[i],lvl=levelForDay(i),profile=cefr[lvl],aud=audioText(i,d),qs=quiz(i,d),speech=st.speech[i]||'';main.innerHTML=`<div class="hero"><div class="small">Woche ${Math.floor(i/7)+1} · Tag ${i+1}</div><h2>${topics[i][0]}</h2><div class="meta"><span class="pill">📊 ${profile.label}</span><span class="pill">🎯 ${topics[i][1]}</span><span class="pill">✅ test ≥ 90 %</span>${st.done[i]?'<span class="pill">🏆 Bereits abgeschlossen</span>':''}</div></div>
 <div class="section"><div class="box"><h3>🧭 Repère CECRL — ${profile.label}</h3><p><b>À ce niveau :</b> ${profile.can}</p><div class="two"><div><b>Lesen</b><p class="small">${profile.read}</p></div><div><b>Hören</b><p class="small">${profile.hear}</p></div></div><p class="small"><b>Sprechen :</b> ${profile.speak}</p></div></div>
 <div class="steps"><div class="step" id="s-course">1 · 📘 Lektion</div><div class="step" id="s-read">2 · 📖 Lesen</div><div class="step" id="s-listen">3 · 🎧 Hören</div><div class="step" id="s-speak">4 · 🎙 Sprechen</div><div class="step" id="s-test">5 · 📝 Test</div></div>
-<div class="section course"><h3>📘 Lektion <span class="small">· Hilfssprache: ${helperLang()==='fr'?'Français':helperLang()==='ar'?'العربية':'English'}</span></h3><div class="box"><h4>Wozu dient diese Lektion? ${helpBlock('intro',cd.intro)}</h4><div class="helpText"></div><p>${sentenceHelpButton(gde.intro,cd.intro)} ${gde.intro}</p><h4>Die wichtigste Regel ${helpBlock('rule',d.r)}</h4><div class="helpText"></div><div class="rule">${sentenceHelpButton(gde.rule,d.r)} ${gde.rule}</div><div class="courseDetail"><h4>Schritt für Schritt ${helpBlock('steps',cd.steps.join(' • '))}</h4><div class="helpText"></div><ul>${gde.steps.map((x,n)=>`<li>${sentenceHelpButton(x,cd.steps[n]||'')} ${x}</li>`).join('')}</ul><p><b>Tipp:</b> ${sentenceHelpButton(gde.tip,cd.tip)} ${gde.tip}</p><div class="helpText"></div></div><h4>Beispiele</h4><div class="examples">${d.e.map((x,n)=>`<div class="ex"><b>Beispiel ${n+1}</b><p>${sentenceHelpButton(x,'')} ${x}</p><button type="button" class="iconBtn speakText" data-text="${x.replace(/"/g,'&quot;')}">🔊 Hören</button></div>`).join('')}</div><h4>Häufiger Fehler ${helpBlock('error',d.w)}</h4><div class="helpText"></div><div class="warn">${sentenceHelpButton(gde.error,d.w)} ${gde.error}</div><h4>Woher weißt du, dass du die Regel verstanden hast?</h4><ol><li>Du kannst die Regel mit eigenen Worten erklären.</li><li>Du kannst einen falschen Satz erkennen und korrigieren.</li><li>Du kannst drei eigene Sätze bilden, ohne die Beispiele zu kopieren.</li><li>Du kannst die Struktur beim Sprechen benutzen.</li></ol></div><div class="two" style="margin-top:12px"><div class="box"><h3>🧠 Aktiver Wortschatz</h3><div class="vocab">${d.v.map(x=>`<div class="vrow"><span dir="${helperLang()==='ar'?'rtl':'ltr'}">${vocabHelp(x[1],x[0])}</span><span class="vright"><span>${x[1]}</span><button type="button" class="iconBtn speakText" data-text="${x[1].replace(/"/g,'&quot;')}">🔊</button></span></div>`).join('')}</div><p class="small">Klicke auf 🔊, höre genau zu und wiederhole das Wort laut.</p></div><div class="box"><h3>✍️ Geführte Übung</h3><p>Schreibe drei eigene Sätze mit der Regel dieser Lektion. <button type="button" class="iconBtn courseHelp" data-kind="exercise" data-help="${helperLang()==='fr'?'Écris trois phrases personnelles en utilisant la règle de cette leçon.':helperLang()==='ar'?'اكتب ثلاث جمل من إنشائك مستخدمًا قاعدة هذا الدرس.':'Write three of your own sentences using the rule from this lesson.'}">${helperLabels[helperLang()]}</button></p><div class="helpText"></div><textarea id="practice"></textarea><div class="actions"><button class="btn primary" id="courseDone">Lektion abgeschlossen</button></div></div></div></div>
+<div class="section course"><h3>📘 Lektion <span class="small">· Hilfssprache: ${helperLang()==='fr'?'Français':helperLang()==='ar'?'العربية':'English'}</span></h3><div class="box"><h4>Wozu dient diese Lektion?</h4><p>${sentenceHelpButton(gde.intro,cd.intro)} ${gde.intro}</p><h4>Die wichtigste Regel</h4><div class="rule">${sentenceHelpButton(gde.rule,d.r)} ${gde.rule}</div><div class="courseDetail"><h4>Schritt für Schritt</h4><ul>${gde.steps.map(x=>`<li>${sentenceHelpButton(x)} ${x}</li>`).join('')}</ul><p><b>Tipp:</b> ${sentenceHelpButton(gde.tip)} ${gde.tip}</p><div class="helpText"></div></div><h4>Beispiele</h4><div class="examples">${d.e.map((x,n)=>`<div class="ex"><b>Beispiel ${n+1}</b><p>${sentenceHelpButton(x,'')} ${x}</p><button type="button" class="iconBtn speakText" data-text="${x.replace(/"/g,'&quot;')}">🔊 Hören</button></div>`).join('')}</div><h4>Häufiger Fehler</h4><div class="warn">${sentenceHelpButton(gde.error,d.w)} ${gde.error}</div><h4>Woher weißt du, dass du die Regel verstanden hast?</h4><ol><li>${sentenceHelpButton('Du kannst die Regel mit eigenen Worten erklären.')} Du kannst die Regel mit eigenen Worten erklären.</li><li>${sentenceHelpButton('Du kannst einen falschen Satz erkennen und korrigieren.')} Du kannst einen falschen Satz erkennen und korrigieren.</li><li>${sentenceHelpButton('Du kannst drei eigene Sätze bilden, ohne die Beispiele zu kopieren.')} Du kannst drei eigene Sätze bilden, ohne die Beispiele zu kopieren.</li><li>${sentenceHelpButton('Du kannst die Struktur beim Sprechen benutzen.')} Du kannst die Struktur beim Sprechen benutzen.</li></ol></div><div class="two" style="margin-top:12px"><div class="box"><h3>🧠 Aktiver Wortschatz</h3><div class="vocab">${d.v.map(x=>`<div class="vrow"><span dir="${helperLang()==='ar'?'rtl':'ltr'}">${vocabHelp(x[1],x[0])}</span><span class="vright"><span>${x[1]}</span><button type="button" class="iconBtn speakText" data-text="${x[1].replace(/"/g,'&quot;')}">🔊</button></span></div>`).join('')}</div><p class="small">${sentenceHelpButton('Klicke auf 🔊, höre genau zu und wiederhole das Wort laut.')} Klicke auf 🔊, höre genau zu und wiederhole das Wort laut.</p></div><div class="box"><h3>✍️ Geführte Übung</h3><p>${sentenceHelpButton('Schreibe drei eigene Sätze mit der Regel dieser Lektion.')} Schreibe drei eigene Sätze mit der Regel dieser Lektion.</p><div class="helpText"></div><textarea id="practice"></textarea><div class="actions"><button class="btn primary" id="courseDone">Lektion abgeschlossen</button></div></div></div></div>
 <div class="section"><h3>📖 Lesen</h3><div class="box"><p class="small">Originaltext auf Niveau ${lvl}, orientiert an praxisnahen Prüfungsformaten.</p><div class="transcript">${sentenceHelpButton(mat.read,'')} ${mat.read}</div><div class="q"><b>${mat.rq[0]} <button type="button" class="iconBtn qhelp" data-help="${qHelp(mat.rq[0]).replace(/"/g,'&quot;')}">${helperLabels[helperLang()]}</button></b><div class="helpText"></div>${mat.rq.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="readq" value="${j}"> ${o}</label>`).join('')}</div><div class="actions"><button class="btn primary" id="readDone">Lesen prüfen</button></div><div id="readFb" class="small"></div></div></div>
 <div class="section"><h3>🎧 Hören</h3><div class="box"><p>${sentenceHelpButton('Höre zuerst ohne Transkript. Ab B1 sollst du das Thema und ein wichtiges Detail erkennen – wie bei Ansagen und Dialogen in Prüfungen.')} Höre zuerst ohne Transkript. Ab B1 sollst du das Thema <b>und ein wichtiges Detail</b> erkennen – wie bei Ansagen und Dialogen in Prüfungen.</p><div class="actions"><button class="btn primary" id="play">▶ Anhören</button><button class="btn secondary" id="slow">🐢 Langsam</button><button class="btn secondary" id="show">Transkript nach der Antwort anzeigen</button></div><div class="q"><b>${mat.lq[0]} <button type="button" class="iconBtn qhelp" data-help="${qHelp(mat.lq[0]).replace(/"/g,'&quot;')}">${helperLabels[helperLang()]}</button></b><div class="helpText"></div>${mat.lq.slice(1).map((o,j)=>`<label class="opt"><input type="radio" name="listenq" value="${j}"> ${o}</label>`).join('')}</div><div class="actions"><button class="btn primary" id="listenDone" disabled>Hören prüfen</button></div><div id="listenFb" class="small"></div><div class="transcript hidden" id="tr">${sentenceHelpButton(aud,'')} ${aud}</div></div></div>
 <div class="section"><h3>🎙 Sprechen</h3><div class="box"><div class="mission"><b>Aufgabe:</b> ${sentenceHelpButton(d.m,'')} ${d.m}</div><p class="small">${sentenceHelpButton('Antworte spontan. Chrome/Edge können deine deutsche Antwort über das Mikrofon transkribieren.')} Antworte spontan. Chrome/Edge können deine deutsche Antwort über das Mikrofon transkribieren.</p><div class="actions"><button class="btn primary" id="mic">🎙 Sprechen</button><button class="btn secondary" id="stop">■ Stoppen</button></div><div class="transcript" id="spoken">${speech||'Deine Transkription erscheint hier …'}</div><div class="small" id="fb"></div><div class="actions"><button class="btn primary" id="speakDone" ${speech.split(/\s+/).filter(Boolean).length>=8?'':'disabled'}>Versuch bestätigen</button><button class="btn secondary" id="manual">Mikrofon nicht verfügbar</button></div></div></div>
