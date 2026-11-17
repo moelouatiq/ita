@@ -7,6 +7,7 @@ import type { Variants } from 'framer-motion'
 import { useRef } from 'react'
 import ContactForm from '@/components/ContactForm'
 import ScrollReveal from '@/components/ScrollReveal'
+import CardAccentBorder from '@/components/CardAccentBorder'
 import { hasWhatsApp, siteConfig } from '@/config/site'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -293,7 +294,7 @@ export default function EmailingContent() {
                 transition={{ type: 'spring', stiffness: 280 }}
                 className="group card glow-hover text-center p-6 block overflow-hidden relative"
               >
-                <div className={`card-accent-line h-1 bg-gradient-to-r ${client.color}`} />
+                <CardAccentBorder gradient={client.color} strong />
                 <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${client.color} flex items-center justify-center text-white font-title font-bold text-xl mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                   {client.name.charAt(0)}
                 </div>

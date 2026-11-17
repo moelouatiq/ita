@@ -7,6 +7,7 @@ import { useRef } from 'react'
 import ContactForm from '@/components/ContactForm'
 import ScrollReveal from '@/components/ScrollReveal'
 import AnimatedCounter from '@/components/AnimatedCounter'
+import CardAccentBorder from '@/components/CardAccentBorder'
 import { hasWhatsApp, siteConfig } from '@/config/site'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -384,8 +385,7 @@ export default function HomePage() {
                 transition={{ type: 'spring', stiffness: 280 }}
                 className="card glow-hover relative overflow-hidden"
               >
-                {/* Top accent bar */}
-                <div className={`card-accent-line h-1 bg-gradient-to-r ${t.color}`} />
+                <CardAccentBorder gradient={t.color} strong />
 
                 <p className="mb-6 mt-2 text-[0.95rem] leading-relaxed text-text-dark">
                   {t.content}

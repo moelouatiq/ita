@@ -7,6 +7,7 @@ import type { Variants } from 'framer-motion'
 import { useRef } from 'react'
 import ScrollReveal from '@/components/ScrollReveal'
 import AnimatedCounter from '@/components/AnimatedCounter'
+import CardAccentBorder from '@/components/CardAccentBorder'
 import { hasWhatsApp, siteConfig } from '@/config/site'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -210,7 +211,7 @@ export default function AboutContent() {
                 transition={{ type: 'spring', stiffness: 280 }}
                 className="card glow-hover text-center relative overflow-hidden"
               >
-                <div className={`card-accent-line h-1 bg-gradient-to-r ${member.color}`} />
+                <CardAccentBorder gradient={member.color} strong />
                 <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${member.color} flex items-center justify-center text-white font-title font-bold text-2xl mx-auto mb-5 mt-3 shadow-lg`}>
                   {member.initial}
                 </div>

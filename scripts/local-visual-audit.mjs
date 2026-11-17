@@ -98,7 +98,8 @@ for (const viewport of viewports) {
         if (rect.width <= 0 || rect.height <= 0) continue
 
         const parent = element.parentElement
-        if (parent && style.position === 'absolute' && rect.height <= 8) {
+        const isAccentRing = element.classList.contains('card-accent-border')
+        if (parent && style.position === 'absolute' && (rect.height <= 8 || isAccentRing)) {
           const parentStyle = getComputedStyle(parent)
           const parentRect = parent.getBoundingClientRect()
           const radius = Number.parseFloat(parentStyle.borderTopLeftRadius) || 0
@@ -106,17 +107,34 @@ for (const viewport of viewports) {
           const spansTop = rect.width >= parentRect.width - 4
 
           if (radius > 0 && nearTop && spansTop) {
+            const accentRadius = Number.parseFloat(style.borderTopLeftRadius) || 0
+            const maskComposite = style.maskComposite || style.webkitMaskComposite || ''
+            const borderBoxAligned =
+              Math.abs(rect.left - parentRect.left) <= 0.1 &&
+              Math.abs(rect.right - parentRect.right) <= 0.1 &&
+              Math.abs(rect.top - parentRect.top) <= 0.1
             roundedDecorators.push({
+              type: isAccentRing ? 'masked-border-ring' : 'short-bar',
               parent: parent.tagName.toLowerCase(),
               parentClass: typeof parent.className === 'string' ? parent.className : '',
               decoratorClass: typeof element.className === 'string' ? element.className : '',
               parentOverflow: parentStyle.overflow,
               parentRadius: radius,
+              accentRadius,
+              maskComposite,
+              clipPath: style.clipPath,
               parentLeft: Math.round(parentRect.left * 10) / 10,
               parentRight: Math.round(parentRect.right * 10) / 10,
+              parentTop: Math.round(parentRect.top * 10) / 10,
               lineLeft: Math.round(rect.left * 10) / 10,
               lineRight: Math.round(rect.right * 10) / 10,
               lineTop: Math.round(rect.top * 10) / 10,
+              structuralIssue: isAccentRing && (
+                Math.abs(accentRadius - radius) > 0.1 ||
+                style.clipPath === 'none' ||
+                !/exclude|xor/.test(maskComposite) ||
+                !borderBoxAligned
+              ),
             })
           }
         }
@@ -290,6 +308,7 @@ const failures = results.filter((result) =>
   result.initialOverflow > 1 ||
   result.finalOverflow > 1 ||
   result.hoverOverflow.length > 0 ||
+  result.roundedDecorators.some((decorator) => decorator.structuralIssue) ||
   result.consoleErrors.length > 0 ||
   result.pageErrors.length > 0
 )

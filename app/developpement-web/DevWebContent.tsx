@@ -7,6 +7,7 @@ import type { Variants } from 'framer-motion'
 import { useRef } from 'react'
 import ContactForm from '@/components/ContactForm'
 import ScrollReveal from '@/components/ScrollReveal'
+import CardAccentBorder from '@/components/CardAccentBorder'
 import { hasWhatsApp, siteConfig } from '@/config/site'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -292,9 +293,9 @@ export default function DevWebContent() {
               <motion.a key={project.title} href={project.url} target="_blank" rel="noopener noreferrer"
                 variants={fadeUp} whileHover={{ y: -6 }}
                 transition={{ type: 'spring', stiffness: 280 }}
-                className="group card p-0 overflow-hidden block"
+                className="group card relative p-0 overflow-hidden block"
               >
-                <div className={`h-1.5 bg-gradient-to-r ${project.color}`} />
+                <CardAccentBorder gradient={project.color} strong />
                 <div className="p-6">
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <h3 className="font-title font-bold text-primary">{project.title}</h3>
@@ -330,7 +331,7 @@ export default function DevWebContent() {
                 variants={fadeUp} whileHover={{ y: -5, borderColor: 'rgba(249,115,22,0.35)' }}
                 className="group relative rounded-2xl border border-white/10 bg-white/4 p-6 transition-colors duration-300 block"
               >
-                <div className={`card-accent-line h-0.5 bg-gradient-to-r ${project.color}`} />
+                <CardAccentBorder gradient={project.color} />
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <h3 className="font-title font-bold text-white">{project.title}</h3>
                   <svg className="w-4 h-4 text-white/70 group-hover:text-accent flex-shrink-0 transition-colors mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

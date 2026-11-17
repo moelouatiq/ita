@@ -85,6 +85,17 @@ for (const route of routes) {
   }
 }
 
+const publicEmail = 'amine@it-a.fr'
+for (const route of ['/', '/contact', '/mentions-legales', '/merci']) {
+  await page.goto(`${baseURL}${route}`, { waitUntil: 'networkidle' })
+  const pageContent = (await page.locator('body').innerText()).toLowerCase()
+  const emailLinks = await page.locator('a[href^="mailto:"]').evaluateAll((anchors) =>
+    anchors.map((anchor) => anchor.getAttribute('href')?.toLowerCase()),
+  )
+  record(`email-public-${route}`, pageContent.includes(publicEmail) && emailLinks.includes(`mailto:${publicEmail}`))
+  record(`ancienne-email-absente-${route}`, !pageContent.includes('contact@ita-advanced.ma'))
+}
+
 for (const href of internalLinks) {
   const response = await context.request.get(`${baseURL}${href}`, { maxRedirects: 0 })
   record(`lien-interne-${href}`, response.status() < 400, String(response.status()))
@@ -94,6 +105,7 @@ await page.goto(`${baseURL}/`, { waitUntil: 'networkidle' })
 const jsonLd = await page.locator('script[type="application/ld+json"]').textContent()
 const schema = jsonLd ? JSON.parse(jsonLd) : null
 record('schema-professional-service', schema?.['@type'] === 'ProfessionalService' && !('telephone' in schema))
+record('schema-email-public', schema?.email === publicEmail, schema?.email ?? '')
 record('favicon-local', (await page.locator('link[rel="icon"]').getAttribute('href'))?.includes('logo.jpg') ?? false)
 record('whatsapp-neutralise', (await page.locator('a[href*="wa.me"]').count()) === 0)
 
