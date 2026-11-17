@@ -8,6 +8,7 @@ import ContactForm from '@/components/ContactForm'
 import ScrollReveal from '@/components/ScrollReveal'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import CardAccentBorder from '@/components/CardAccentBorder'
+import AnimatedHeroTitle from '@/components/AnimatedHeroTitle'
 import { hasWhatsApp, siteConfig } from '@/config/site'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -102,7 +103,8 @@ export default function HomePage() {
         <div className="absolute top-28 right-[18%]  w-14 h-14 border border-accent/20   rounded-2xl float-y opacity-40 rotate-12 pointer-events-none" />
         <div className="absolute top-56 right-[38%]  w-6  h-6  bg-accent/25             rounded-full float-y opacity-70 pointer-events-none" style={{ animationDelay: '2s' }} />
         <div className="absolute bottom-44 right-[28%] w-10 h-10 border border-white/10 rounded-full float-x opacity-25 pointer-events-none" style={{ animationDelay: '1s' }} />
-        <div className="absolute bottom-56 left-[8%]  w-20 h-20 border-2 border-accent/12 rounded-3xl float-y opacity-20 -rotate-6 pointer-events-none" style={{ animationDelay: '4s' }} />
+        {/* Carré décoratif gauche — masqué sous 1024px (chevauche le contenu sur mobile/tablette) */}
+        <div className="absolute bottom-56 left-[8%]  w-20 h-20 border-2 border-accent/12 rounded-3xl float-y opacity-20 -rotate-6 pointer-events-none hidden lg:block" style={{ animationDelay: '4s' }} />
         <div className="absolute top-40  left-[30%]  w-3  h-3  bg-white/20             rounded-full float-y opacity-60 pointer-events-none" style={{ animationDelay: '3s' }} />
 
         {/* Grid overlay */}
@@ -128,24 +130,16 @@ export default function HomePage() {
             </motion.div>
 
             {/* Main headline — character by character */}
-            <h1 aria-label="Votre présence digitale, notre expertise." className="font-title font-bold leading-[1.02] tracking-tight mb-8">
-              {[
-                { text: 'Votre présence', size: 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white' },
-                { text: 'digitale,',      size: 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white/70' },
-                { text: 'notre',          size: 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white' },
-                { text: 'expertise.',     size: 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl gradient-text' },
-              ].map((line, i) => (
-                <motion.div
-                  key={i}
-                  className={`block ${line.size}`}
-                  initial={{ opacity: 0, x: -40, filter: 'blur(12px)' }}
-                  animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                  transition={{ duration: 0.8, delay: 0.2 + i * 0.13, ease: EASE }}
-                >
-                  {line.text}{' '}
-                </motion.div>
-              ))}
-            </h1>
+            <AnimatedHeroTitle
+              label="Votre présence digitale, notre expertise."
+              className="mb-8 text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
+              parts={[
+                { text: 'Votre présence', className: 'text-white' },
+                { text: 'digitale,', className: 'text-white/70' },
+                { text: 'notre', className: 'text-white' },
+                { text: 'expertise.', className: 'gradient-text' },
+              ]}
+            />
 
             {/* Sub */}
             <motion.p
@@ -202,9 +196,9 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* Scroll mouse */}
+        {/* Scroll mouse — masqué sous 1024px */}
         <motion.div
-          className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 pointer-events-none sm:flex"
+          className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 pointer-events-none lg:flex"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6 }}
         >
           <span className="text-white/70 text-[10px] tracking-[0.25em] uppercase font-medium">Défiler</span>
@@ -255,9 +249,8 @@ export default function HomePage() {
               <span className="inline-block bg-white/8 border border-white/12 text-white/60 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
                 Nos prestations
               </span>
-              <h2 className="font-title text-4xl md:text-5xl font-bold text-white leading-tight">
-                Ce que nous <br />
-                <span className="gradient-text">faisons très bien</span>
+              <h2 className="font-title text-4xl md:text-5xl font-bold text-white leading-tight text-balance">
+                Ce que nous <span className="gradient-text">faisons très bien</span>
               </h2>
             </div>
             <p className="text-white/70 text-base max-w-xs leading-relaxed">
@@ -366,9 +359,8 @@ export default function HomePage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="text-center mb-16">
             <span className="badge">Références</span>
-            <h2 className="font-title text-3xl md:text-4xl font-bold text-primary mt-4">
-              Quelques projets du<br />
-              <span className="gradient-text">ITA Advanced</span>
+            <h2 className="font-title text-3xl md:text-4xl font-bold text-primary mt-4 text-balance">
+              Quelques projets du <span className="gradient-text">ITA Advanced</span>
             </h2>
           </ScrollReveal>
 

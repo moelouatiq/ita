@@ -7,6 +7,7 @@ import { useRef } from 'react'
 import ContactForm from '@/components/ContactForm'
 import ScrollReveal from '@/components/ScrollReveal'
 import CardAccentBorder from '@/components/CardAccentBorder'
+import AnimatedHeroTitle from '@/components/AnimatedHeroTitle'
 import { hasWhatsApp, siteConfig } from '@/config/site'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -77,21 +78,15 @@ export default function LandingPageContent() {
               </span>
             </motion.div>
 
-            <h1 aria-label="Des landing pages qui convertissent vos visiteurs en clients." className="font-title font-bold leading-[1.02] tracking-tight mb-8">
-              {[
-                { text: 'Des landing pages qui', size: 'text-4xl md:text-5xl lg:text-6xl text-white' },
-                { text: 'convertissent vos', size: 'text-4xl md:text-5xl lg:text-6xl text-white/60' },
-                { text: 'visiteurs en clients.', size: 'text-4xl md:text-5xl lg:text-6xl gradient-text' },
-              ].map((line, i) => (
-                <motion.div key={i} className={`block ${line.size}`}
-                  initial={{ opacity: 0, x: -40, filter: 'blur(12px)' }}
-                  animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                  transition={{ duration: 0.8, delay: 0.2 + i * 0.13, ease: EASE }}
-                >
-                  {line.text}{' '}
-                </motion.div>
-              ))}
-            </h1>
+            <AnimatedHeroTitle
+              label="Des landing pages qui convertissent vos visiteurs en clients."
+              className="mb-8 text-4xl md:text-5xl lg:text-6xl"
+              parts={[
+                { text: 'Des landing pages qui', className: 'text-white' },
+                { text: 'convertissent vos', className: 'text-white/60' },
+                { text: 'visiteurs en clients.', className: 'gradient-text' },
+              ]}
+            />
 
             <motion.p className="text-white/75 text-lg md:text-xl leading-relaxed mb-12 max-w-2xl"
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
@@ -185,9 +180,8 @@ export default function LandingPageContent() {
           <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div>
               <span className="inline-block bg-white/8 border border-white/12 text-white/60 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">Ce qui est inclus</span>
-              <h2 className="font-title text-4xl md:text-5xl font-bold text-white leading-tight">
-                Une page qui travaille<br />
-                <span className="gradient-text">pour vous 24h/24</span>
+              <h2 className="font-title text-4xl md:text-5xl font-bold text-white leading-tight text-balance">
+                Une page qui travaille <span className="gradient-text">pour vous 24h/24</span>
               </h2>
             </div>
             <p className="text-white/70 text-base max-w-xs leading-relaxed">

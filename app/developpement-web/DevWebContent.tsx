@@ -8,6 +8,7 @@ import { useRef } from 'react'
 import ContactForm from '@/components/ContactForm'
 import ScrollReveal from '@/components/ScrollReveal'
 import CardAccentBorder from '@/components/CardAccentBorder'
+import AnimatedHeroTitle from '@/components/AnimatedHeroTitle'
 import { hasWhatsApp, siteConfig } from '@/config/site'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -81,21 +82,15 @@ export default function DevWebContent() {
                 </span>
               </motion.div>
 
-              <h1 aria-label="Des solutions web taillées pour vos besoins." className="font-title font-bold leading-[1.02] tracking-tight mb-8">
-                {[
-                  { text: 'Des solutions web', size: 'text-4xl md:text-5xl lg:text-6xl text-white' },
-                  { text: 'taillées pour', size: 'text-4xl md:text-5xl lg:text-6xl text-white/60' },
-                  { text: 'vos besoins.', size: 'text-4xl md:text-5xl lg:text-6xl gradient-text' },
-                ].map((line, i) => (
-                  <motion.div key={i} className={`block ${line.size}`}
-                    initial={{ opacity: 0, x: -40, filter: 'blur(12px)' }}
-                    animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                    transition={{ duration: 0.8, delay: 0.2 + i * 0.13, ease: EASE }}
-                  >
-                    {line.text}{' '}
-                  </motion.div>
-                ))}
-              </h1>
+              <AnimatedHeroTitle
+                label="Des solutions web taillées pour vos besoins."
+                className="mb-8 text-4xl md:text-5xl lg:text-6xl"
+                parts={[
+                  { text: 'Des solutions web', className: 'text-white' },
+                  { text: 'taillées pour', className: 'text-white/60' },
+                  { text: 'vos besoins.', className: 'gradient-text' },
+                ]}
+              />
 
               <motion.p className="text-white/75 text-lg leading-relaxed mb-12 max-w-lg"
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
@@ -181,9 +176,8 @@ export default function DevWebContent() {
           <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div>
               <span className="inline-block bg-white/8 border border-white/12 text-white/60 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">Types de projets</span>
-              <h2 className="font-title text-4xl md:text-5xl font-bold text-white leading-tight">
-                Quel que soit<br />
-                <span className="gradient-text">votre projet</span>
+              <h2 className="font-title text-4xl md:text-5xl font-bold text-white leading-tight text-balance">
+                Quel que soit <span className="gradient-text">votre projet</span>
               </h2>
             </div>
             <p className="text-white/70 text-base max-w-xs leading-relaxed">
