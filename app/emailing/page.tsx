@@ -4,6 +4,8 @@ import EmailingContent from './EmailingContent'
 export const metadata: Metadata = {
   title: 'Intégration Emailing & Newsletter',
   description: 'Création et intégration de newsletters HTML responsive. Templates compatibles Mailchimp, Brevo, Klaviyo. À partir de 190 €.',
+  alternates: { canonical: '/emailing' },
+  openGraph: { url: '/emailing' },
 }
 
 export default function EmailingPage() {

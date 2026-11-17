@@ -5,6 +5,7 @@ import type { Variants } from 'framer-motion'
 import { useRef } from 'react'
 import ContactForm from '@/components/ContactForm'
 import ScrollReveal from '@/components/ScrollReveal'
+import { hasWhatsApp, siteConfig } from '@/config/site'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 const stagger: Variants = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }
@@ -26,16 +27,16 @@ const contactInfo = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
       </svg>
     ),
-    label: 'Email', value: 'contact@ita-advanced.ma', href: 'mailto:contact@ita-advanced.ma', color: 'from-blue-500 to-indigo-700',
+    label: 'Email', value: siteConfig.contact.email, href: `mailto:${siteConfig.contact.email}`, color: 'from-blue-500 to-indigo-700',
   },
-  {
+  ...(siteConfig.contact.phone ? [{
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
       </svg>
     ),
-    label: 'WhatsApp / Téléphone', value: '+212 6XX XXX XXX', href: 'https://wa.me/212600000000', color: 'from-emerald-500 to-green-700',
-  },
+    label: 'Téléphone', value: siteConfig.contact.phone, href: `tel:${siteConfig.contact.phone}`, color: 'from-emerald-500 to-green-700',
+  }] : []),
   {
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +71,7 @@ export default function ContactContent() {
             </span>
           </motion.div>
 
-          <h1 className="font-title font-bold leading-[1.02] tracking-tight mb-8 flex flex-col items-center">
+          <h1 aria-label="Parlons de votre projet." className="font-title font-bold leading-[1.02] tracking-tight mb-8 flex flex-col items-center">
             {[
               { text: 'Parlons de', size: 'text-4xl md:text-5xl lg:text-6xl text-white' },
               { text: 'votre projet.', size: 'text-4xl md:text-5xl lg:text-6xl gradient-text' },
@@ -80,16 +81,16 @@ export default function ContactContent() {
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 transition={{ duration: 0.8, delay: 0.2 + i * 0.15, ease: EASE }}
               >
-                {line.text}
+                {line.text}{' '}
               </motion.span>
             ))}
           </h1>
 
-          <motion.p className="text-white/55 text-lg md:text-xl leading-relaxed max-w-xl mx-auto"
+          <motion.p className="text-white/75 text-lg md:text-xl leading-relaxed max-w-xl mx-auto"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            Devis gratuit, sans engagement. Remplissez le formulaire ou écrivez-nous directement sur WhatsApp.
+            Devis gratuit, sans engagement. {hasWhatsApp ? 'Remplissez le formulaire ou écrivez-nous sur WhatsApp.' : 'Remplissez le formulaire pour nous présenter votre projet.'}
           </motion.p>
         </motion.div>
       </section>
@@ -108,7 +109,7 @@ export default function ContactContent() {
             <div className="lg:col-span-2 space-y-5">
               <ScrollReveal>
                 <h2 className="font-title text-2xl font-bold text-white mb-2">Nos coordonnées</h2>
-                <p className="text-white/45 mb-6">WhatsApp est idéal pour une réponse rapide.</p>
+                <p className="mb-6 text-white/70">Écrivez-nous par e-mail ou utilisez le formulaire sécurisé.</p>
               </ScrollReveal>
 
               <motion.div className="space-y-4"
@@ -123,10 +124,10 @@ export default function ContactContent() {
                       {item.icon}
                     </div>
                     <div>
-                      <p className="text-xs text-white/35 font-medium uppercase tracking-wider mb-1">{item.label}</p>
+                      <p className="text-xs text-white/70 font-medium uppercase tracking-wider mb-1">{item.label}</p>
                       {item.href ? (
                         <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer"
-                          className="font-semibold text-white hover:text-accent transition-colors">
+                          className="inline-flex min-h-11 items-center font-semibold text-white transition-colors hover:text-accent">
                           {item.value}
                         </a>
                       ) : (
@@ -137,9 +138,10 @@ export default function ContactContent() {
                 ))}
               </motion.div>
 
-              <ScrollReveal delay={0.4}>
+              {hasWhatsApp && <ScrollReveal delay={0.4}>
                 <motion.a
-                  href="https://wa.me/212600000000" target="_blank" rel="noopener noreferrer"
+                  href={siteConfig.contact.whatsappUrl!} target="_blank" rel="noopener noreferrer"
+                  aria-label={`Contacter ${siteConfig.name} sur WhatsApp`}
                   className="flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-4 rounded-xl transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 w-full justify-center"
                   whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 >
@@ -148,14 +150,14 @@ export default function ContactContent() {
                   </svg>
                   Écrire sur WhatsApp
                 </motion.a>
-              </ScrollReveal>
+              </ScrollReveal>}
 
               <ScrollReveal delay={0.5}>
                 <div className="glass rounded-2xl p-6 border border-white/8">
                   <p className="font-title font-semibold text-white mb-4">Nos engagements</p>
                   <ul className="space-y-3">
                     {['Réponse sous 24h garantie', 'Devis détaillé et gratuit', 'Sans engagement de votre part', 'Confidentialité de vos données'].map((item) => (
-                      <li key={item} className="flex items-center gap-2 text-white/55 text-sm">
+                      <li key={item} className="flex items-center gap-2 text-white/75 text-sm">
                         <svg className="w-5 h-5 text-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
@@ -171,7 +173,7 @@ export default function ContactContent() {
             <ScrollReveal direction="right" className="lg:col-span-3">
               <div className="glass rounded-3xl p-8 md:p-10 border border-white/8">
                 <h2 className="font-title text-2xl font-bold text-white mb-2">Envoyez-nous un message</h2>
-                <p className="text-white/45 mb-8 text-sm">Décrivez votre projet, nous revenons vers vous avec une proposition personnalisée.</p>
+                <p className="text-white/70 mb-8 text-sm">Décrivez votre projet, nous revenons vers vous avec une proposition personnalisée.</p>
                 <ContactForm />
               </div>
             </ScrollReveal>

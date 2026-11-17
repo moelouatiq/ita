@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { siteConfig } from '@/config/site'
 
 interface ContactFormProps {
   defaultSubject?: string
@@ -10,13 +11,16 @@ interface ContactFormProps {
 
 export default function ContactForm({ defaultSubject = '', compact = false }: ContactFormProps) {
   const router = useRouter()
+  const formId = useId()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     name: '',
     email: '',
     phone: '',
     subject: defaultSubject,
     message: '',
+    website: '',
   })
 
   const subjects = [
@@ -34,74 +38,97 @@ export default function ContactForm({ defaultSubject = '', compact = false }: Co
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
     setLoading(true)
-    // TODO: Integrate with email service (Resend, Nodemailer, etc.)
-    await new Promise((r) => setTimeout(r, 1200))
-    setLoading(false)
-    router.push('/merci')
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const result = await response.json().catch(() => ({})) as { error?: string }
+
+      if (!response.ok) {
+        throw new Error(result.error || 'L’envoi a échoué. Merci de réessayer.')
+      }
+
+      router.push('/merci')
+    } catch (submissionError) {
+      setError(submissionError instanceof Error ? submissionError.message : 'L’envoi a échoué. Merci de réessayer.')
+    } finally {
+      setLoading(false)
+    }
   }
+
+  const inputClassName = 'min-h-12 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-text-dark placeholder-slate-500 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40'
+  const labelClassName = 'mb-1.5 block text-sm font-semibold text-white'
+  const fieldId = (name: string) => `${formId}-${name}`
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className={`grid gap-5 ${compact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-text-dark mb-1.5">
+          <label htmlFor={fieldId('name')} className={labelClassName}>
             Nom & Prénom *
           </label>
           <input
-            id="name"
+            id={fieldId('name')}
             name="name"
             type="text"
             required
+            autoComplete="name"
             value={form.name}
             onChange={handleChange}
             placeholder="Jean Dupont"
-            className="w-full px-4 py-3 rounded-xl border border-border-light focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-colors bg-white text-text-dark placeholder-text-secondary"
+            className={inputClassName}
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-text-dark mb-1.5">
+          <label htmlFor={fieldId('email')} className={labelClassName}>
             Email *
           </label>
           <input
-            id="email"
+            id={fieldId('email')}
             name="email"
             type="email"
             required
+            autoComplete="email"
             value={form.email}
             onChange={handleChange}
             placeholder="jean@entreprise.com"
-            className="w-full px-4 py-3 rounded-xl border border-border-light focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-colors bg-white text-text-dark placeholder-text-secondary"
+            className={inputClassName}
           />
         </div>
       </div>
 
       <div className={`grid gap-5 ${compact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-text-dark mb-1.5">
+          <label htmlFor={fieldId('phone')} className={labelClassName}>
             Téléphone / WhatsApp
           </label>
           <input
-            id="phone"
+            id={fieldId('phone')}
             name="phone"
             type="tel"
+            autoComplete="tel"
             value={form.phone}
             onChange={handleChange}
-            placeholder="+212 6XX XXX XXX"
-            className="w-full px-4 py-3 rounded-xl border border-border-light focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-colors bg-white text-text-dark placeholder-text-secondary"
+            placeholder="Votre numéro (facultatif)"
+            className={inputClassName}
           />
         </div>
         <div>
-          <label htmlFor="subject" className="block text-sm font-medium text-text-dark mb-1.5">
+          <label htmlFor={fieldId('subject')} className={labelClassName}>
             Sujet *
           </label>
           <select
-            id="subject"
+            id={fieldId('subject')}
             name="subject"
             required
             value={form.subject}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-border-light focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-colors bg-white text-text-dark"
+            className={inputClassName}
           >
             <option value="">Choisir un sujet</option>
             {subjects.map((s) => (
@@ -111,20 +138,40 @@ export default function ContactForm({ defaultSubject = '', compact = false }: Co
         </div>
       </div>
 
-      {!compact && (
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium text-text-dark mb-1.5">
-            Message
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            rows={5}
-            value={form.message}
-            onChange={handleChange}
-            placeholder="Décrivez votre projet en quelques lignes…"
-            className="w-full px-4 py-3 rounded-xl border border-border-light focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-colors bg-white text-text-dark placeholder-text-secondary resize-none"
-          />
+      <div>
+        <label htmlFor={fieldId('message')} className={labelClassName}>
+          Décrivez votre projet *
+        </label>
+        <textarea
+          id={fieldId('message')}
+          name="message"
+          rows={compact ? 4 : 5}
+          required
+          maxLength={4000}
+          value={form.message}
+          onChange={handleChange}
+          placeholder="Objectifs, délais et besoins principaux…"
+          className={`${inputClassName} resize-y`}
+        />
+      </div>
+
+      <div className="absolute -left-[9999px]" aria-hidden="true">
+        <label htmlFor={fieldId('website')}>Site internet</label>
+        <input
+          id={fieldId('website')}
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={form.website}
+          onChange={handleChange}
+        />
+      </div>
+
+      {error && (
+        <div role="alert" className="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
+          {error}{' '}
+          <a className="underline underline-offset-2" href={`mailto:${siteConfig.contact.email}`}>Nous écrire par e-mail</a>
         </div>
       )}
 
@@ -132,7 +179,8 @@ export default function ContactForm({ defaultSubject = '', compact = false }: Co
         <button
           type="submit"
           disabled={loading}
-          className="w-full btn-primary justify-center py-4 text-base disabled:opacity-70 disabled:cursor-not-allowed"
+          aria-busy={loading}
+          className="w-full btn-primary justify-center py-4 text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {loading ? (
             <>
@@ -151,7 +199,7 @@ export default function ContactForm({ defaultSubject = '', compact = false }: Co
             </>
           )}
         </button>
-        <p className="text-center text-xs text-text-secondary mt-3">
+        <p className="mt-3 text-center text-xs font-medium text-white/75">
           Réponse sous 24h — Devis gratuit — Sans engagement
         </p>
       </div>

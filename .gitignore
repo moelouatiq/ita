@@ -8,6 +8,7 @@ out/
 # Build
 dist/
 build/
+*.tsbuildinfo
 
 # Env
 .env
@@ -17,6 +18,9 @@ build/
 # Logs
 *.log
 npm-debug.log*
+
+# Local browser audit artifacts
+test-results/
 
 # OS
 .DS_Store

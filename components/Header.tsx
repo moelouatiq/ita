@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const navLinks = [
+const allNavLinks = [
   { href: '/', label: 'Accueil' },
   { href: '/emailing', label: 'Emailing' },
   { href: '/landing-page', label: 'Landing Pages' },
@@ -14,11 +14,29 @@ const navLinks = [
   { href: '/a-propos', label: 'À propos' },
 ]
 
+// On virtual local domains, only show the link for that domain's page
+const DOMAIN_SINGLE_PAGE: Record<string, string> = {
+  'emailing.local':         '/emailing',
+  'landing-page.local':     '/landing-page',
+  'developpement-web.local': '/developpement-web',
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const pathname = usePathname()
+
+  const [navLinks, setNavLinks] = useState(allNavLinks)
+  const [homeHref, setHomeHref] = useState('/')
+  useEffect(() => {
+    const host = window.location.hostname
+    const locked = DOMAIN_SINGLE_PAGE[host]
+    if (locked) {
+      setNavLinks([{ href: locked, label: 'Accueil' }])
+      setHomeHref(locked)
+    }
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,19 +71,19 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center group">
+            <Link href={homeHref} className="touch-target group flex items-center justify-center">
               <Image
                 src="/logo.jpg"
                 alt="ITA Advanced Agence Digitale"
-                width={120}
-                height={40}
-                className="h-10 w-auto object-contain transition-all duration-300 group-hover:opacity-80 group-hover:scale-105"
+                width={48}
+                height={48}
+                className="h-10 w-10 object-contain transition-all duration-300 group-hover:opacity-80 group-hover:scale-105"
                 priority
               />
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -93,7 +111,7 @@ export default function Header() {
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                 <Link
                   href="/contact"
-                  className="hidden md:inline-flex btn-primary text-sm py-2.5 px-5"
+                  className="hidden lg:inline-flex btn-primary text-sm py-2.5 px-5"
                 >
                   Devis gratuit
                 </Link>
@@ -101,8 +119,10 @@ export default function Header() {
 
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="md:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
-                aria-label="Menu"
+                className="touch-target lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+                aria-label={menuOpen ? 'Fermer le menu principal' : 'Ouvrir le menu principal'}
+                aria-expanded={menuOpen}
+                aria-controls="mobile-navigation"
               >
                 <motion.div
                   animate={menuOpen ? 'open' : 'closed'}
@@ -137,9 +157,9 @@ export default function Header() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-              className="md:hidden bg-primary/98 backdrop-blur-xl border-t border-white/10 overflow-hidden"
+              className="lg:hidden bg-primary/98 backdrop-blur-xl border-t border-white/10 overflow-hidden"
             >
-              <nav className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
+              <nav id="mobile-navigation" className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
                 {navLinks.map((link, i) => (
                   <motion.div
                     key={link.href}

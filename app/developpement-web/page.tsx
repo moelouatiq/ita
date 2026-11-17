@@ -4,6 +4,8 @@ import DevWebContent from './DevWebContent'
 export const metadata: Metadata = {
   title: 'Développement Web Sur Mesure',
   description: 'Sites vitrines, e-commerce, applications métier. Développement web sur mesure à Marrakech. Devis gratuit.',
+  alternates: { canonical: '/developpement-web' },
+  openGraph: { url: '/developpement-web' },
 }
 
 export default function DevWebPage() {
